@@ -1,11 +1,11 @@
 import HeroSection from './HeroSection'
-
 import { FaUserGroup, FaLocationDot, FaDollarSign, FaCameraRetro } from "react-icons/fa6";
 import MiddleSection from './MiddleSection';
+import FeaturedTrips from './FeaturedTrips';
 
 function Home() {
   return (
-    <div>
+    <div className=''>
       <HeroSection />
       <div className='items-center justify-items-center mt-16'>
         <h1 className='text-5xl font-semibold'>Everything You Need for Amazing Trips</h1>
@@ -49,6 +49,7 @@ function Home() {
           </div>
         </div>
         <MiddleSection />
+        <FeaturedTrips />
       </div>
     </div>
   )
