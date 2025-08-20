@@ -8,7 +8,7 @@ const HeroSection = () => {
                     <h1 className="text-6xl font-bold">Plan Amazing Trips
                         Together</h1>
                     <p className="py-6">
-                        Connect with fellow travelers, discover incredible destinations, and create unforgettable memories. Join group trips or organize your own adventures with TripBuddy.
+                        Connect with fellow travelers, discover incredible destinations, and create unforgettable memories. Join group trips or organize your own adventures with Travecta.
                     </p>
                     <div className="flex gap-3 items-center">
                         <button className="btn bg-cyan-600 rounded-2xl text-white text-xl px-5">Explore Trips</button>
