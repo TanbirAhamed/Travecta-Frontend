@@ -10,7 +10,7 @@ function Navbar() {
     </>
   return (
     <div className="sticky top-0 z-50 bg-base-100 shadow-md">
-      <div className="navbar max-w-7xl mx-auto ">
+      <div className="navbar max-w-[1536px] mx-auto ">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -22,7 +22,7 @@ function Navbar() {
               {links}
             </ul>
           </div>
-          <Link to='/' className="cursor-pointer text-2xl font-bold flex justify-items-center gap-2"><GiAirplaneDeparture className="text-4xl" />TripBuddy</Link>
+          <Link to='/' className="cursor-pointer text-2xl font-bold flex justify-items-center gap-2"><GiAirplaneDeparture className="text-4xl" />Travecta</Link>
         </div>
         <div className="navbar-end gap-4 font-semibold">
           {links}
