@@ -9,7 +9,7 @@ function Home() {
       <HeroSection />
       <div className='items-center justify-items-center mt-16'>
         <h1 className='text-5xl font-semibold'>Everything You Need for Amazing Trips</h1>
-        <p className='mt-3 text-xl w-1/2 text-center'>From planning to memories, TripBuddy has all the tools to make your adventures seamless and enjoyable.</p>
+        <p className='mt-3 text-xl w-1/2 text-center'>From planning to memories, Travecta has all the tools to make your adventures seamless and enjoyable.</p>
         <div className="mt-16 flex items-start justify-center gap-10 text-center mb-16">
           <div className="flex flex-col items-center max-w-xs">
             <div className="p-4 rounded-full bg-cyan-100">

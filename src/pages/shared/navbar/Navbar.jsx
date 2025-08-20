@@ -1,9 +1,16 @@
 import { GiAirplaneDeparture } from "react-icons/gi";
+import { Link, NavLink } from "react-router";
 
 function Navbar() {
+  const links =
+    <>
+      <NavLink>Explore Trips</NavLink>
+      <NavLink to='/login' className="">Sign In</NavLink>
+      <NavLink to='/signup' className="btn bg-cyan-600 text-white rounded-xl">Sign Up</NavLink>
+    </>
   return (
     <div className="sticky top-0 z-50 bg-base-100 shadow-md">
-      <div className="navbar max-w-7xl mx-auto ">
+      <div className="navbar max-w-[1536px] mx-auto ">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -12,23 +19,13 @@ function Navbar() {
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-              <li><a>Item 1</a></li>
-              <li>
-                <a>Parent</a>
-                <ul className="p-2">
-                  <li><a>Submenu 1</a></li>
-                  <li><a>Submenu 2</a></li>
-                </ul>
-              </li>
-              <li><a>Item 3</a></li>
+              {links}
             </ul>
           </div>
-          <a className="cursor-pointer text-2xl font-bold flex justify-items-center gap-2"><GiAirplaneDeparture className="text-4xl" />TripBuddy</a>
+          <Link to='/' className="cursor-pointer text-2xl font-bold flex justify-items-center gap-2"><GiAirplaneDeparture className="text-4xl" />Travecta</Link>
         </div>
         <div className="navbar-end gap-4 font-semibold">
-          <a className="cursor-pointer mr-3">Explore Trips</a>
-          <a className="cursor-pointer">Sign In</a>
-          <a className="btn bg-cyan-600 text-white rounded-xl">Sign Up</a>
+          {links}
         </div>
       </div>
     </div>

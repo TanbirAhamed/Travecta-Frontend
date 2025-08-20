@@ -4,7 +4,7 @@ import { FiUsers } from "react-icons/fi";
 
 const tripsData = [
   {
-    id: 1,
+    id: 111,
     title: "Tokyo Adventure",
     location: "Tokyo, Japan",
     date: "Jun 15, 2024 - Jun 22, 2024",
@@ -14,7 +14,7 @@ const tripsData = [
     description: "Explore the vibrant culture and cuisine of Tokyo",
   },
   {
-    id: 1,
+    id: 133,
     title: "Tokyo Adventure",
     location: "Tokyo, Japan",
     date: "Jun 15, 2024 - Jun 22, 2024",
@@ -24,7 +24,7 @@ const tripsData = [
     description: "Explore the vibrant culture and cuisine of Tokyo",
   },
   {
-    id: 1,
+    id: 11,
     title: "Tokyo Adventure",
     location: "Tokyo, Japan",
     date: "Jun 15, 2024 - Jun 22, 2024",
@@ -34,7 +34,7 @@ const tripsData = [
     description: "Explore the vibrant culture and cuisine of Tokyo",
   },
   {
-    id: 1,
+    id: 2,
     title: "Tokyo Adventure",
     location: "Tokyo, Japan",
     date: "Jun 15, 2024 - Jun 22, 2024",
@@ -44,7 +44,7 @@ const tripsData = [
     description: "Explore the vibrant culture and cuisine of Tokyo",
   },
   {
-    id: 1,
+    id: 3,
     title: "Tokyo Adventure",
     location: "Tokyo, Japan",
     date: "Jun 15, 2024 - Jun 22, 2024",
