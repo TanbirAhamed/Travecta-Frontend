@@ -67,8 +67,8 @@ const FeaturedTrips = () => {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
         {tripsData.slice(0, 3).map((trip) => (
-          <div key={trip.id} className="card bg-base-100 shadow-md">
-            <figure>
+          <div key={trip.id} className="card bg-base-100 shadow-md h-96">
+            <figure className="">
               <img src={trip.image} alt={trip.title} />
             </figure>
             <div className="card-body">
