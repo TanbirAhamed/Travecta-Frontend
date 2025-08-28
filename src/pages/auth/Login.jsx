@@ -16,7 +16,7 @@ const Login = () => {
             {/* Logo + Heading */}
             <div className="text-center mb-8">
                 <div className="flex items-center justify-center gap-2 text-xl font-bold">
-                    <span className="text-blue-600 text-2xl">📍</span> TripBuddy
+                    <span className="text-blue-600 text-2xl">📍</span> Travecta
                 </div>
                 <h2 className="mt-4 text-2xl font-bold">Welcome Back</h2>
                 <p className="text-gray-500">
