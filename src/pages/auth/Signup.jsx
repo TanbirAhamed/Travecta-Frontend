@@ -1,17 +1,78 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaUserPlus } from "react-icons/fa";
+import useAuth from "../../hooks/useAuth";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const Signup = () => {
+    const { createNewUser, updateUserProfile, setUser } = useAuth();
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const axiosPublic = useAxiosPublic();
 
     const handleSignup = e => {
         e.preventDefault();
+        setError('');
+
         const form = new FormData(e.target);
         const name = form.get("name");
-        const photoURL = form.get("photoURL");
+        const photo = form.get("photoURL");
         const email = form.get("email");
         const password = form.get("password");
 
-        console.log({ name, photoURL, email, password });
+        if (password.length < 6) {
+            setError('Password should be at least 6');
+            return;
+        }
+
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?":{}|<>]).*$/;
+
+        if (!passwordRegex.test(password)) {
+            setError('Password must contain at least one uppercase letter, one lowercase letter, and one special character!');
+            return;
+        }
+
+        createNewUser(email, password)
+            .then(result => {
+                const user = result.user;
+                setUser(user);
+                updateUserProfile({ displayName: name, photoURL: photo })
+                    .then(() => {
+                        const userInfo = {
+                            name: name,
+                            email: email,
+                            role: 'user'
+                        };
+
+                        axiosPublic.post('/users', userInfo)
+                            .then(res => {
+                                if (res.data.insertedId) {
+                                    Swal.fire({
+                                        title: "SignUp Success!",
+                                        showClass: {
+                                            popup: `
+                                            animate__animated
+                                            animate__fadeInUp
+                                            animate__faster
+                                          `
+                                        },
+                                        hideClass: {
+                                            popup: `
+                                            animate__animated
+                                            animate__fadeOutDown
+                                            animate__faster
+                                          `
+                                        }
+                                    });
+                                    navigate('/');
+                                }
+                            })
+                    })
+                    .catch(err => {
+                        setError(err.message)
+                    })
+            })
     };
 
     return (
@@ -95,6 +156,7 @@ const Signup = () => {
                     </a>
                 </p>
             </div>
+            {error && <p className="text-red-500 p-4">{error}</p>}
         </div>
     );
 };
