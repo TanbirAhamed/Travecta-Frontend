@@ -1,12 +1,13 @@
 import { GiAirplaneDeparture } from "react-icons/gi";
 import { Link, NavLink } from "react-router";
+import useAuth from "../../../hooks/useAuth";
 
 function Navbar() {
+  const { user, logOut } = useAuth();
   const links =
     <>
       <NavLink>Explore Trips</NavLink>
-      <NavLink to='/login' className="">Sign In</NavLink>
-      <NavLink to='/signup' className="btn bg-cyan-600 text-white rounded-xl">Sign Up</NavLink>
+
     </>
   return (
     <div className="sticky top-0 z-50 bg-base-100 shadow-md">
@@ -26,6 +27,26 @@ function Navbar() {
         </div>
         <div className="navbar-end gap-4 font-semibold">
           {links}
+          {user?.email ? (
+            <>
+              <img
+                className="w-10 h-10 rounded-full border border-gray-300"
+                src={user?.photoURL}
+                alt="User Avatar"
+              />
+              <button
+                onClick={logOut}
+                className="bg-white font-semibold py-2 px-4 rounded-xl border hover:bg-blue-50"
+              >
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to='/login' className="">Sign In</NavLink>
+              <NavLink to='/signup' className="btn bg-cyan-600 text-white rounded-xl">Sign Up</NavLink>
+            </>
+          )}
         </div>
       </div>
     </div>
