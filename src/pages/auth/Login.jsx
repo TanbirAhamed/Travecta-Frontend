@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
+import { useNavigate } from "react-router";
+import useAuth from "../../hooks/useAuth";
 
 const Login = () => {
+    const { userLogin, setUser } = useAuth();
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = e => {
         e.preventDefault();
         const form = new FormData(e.target);
         const email = form.get('email');
         const password = form.get('password');
-        console.log({ email, password });
+
+        userLogin(email, password)
+            .then((result) => {
+                setUser(result.user);
+                navigate("/");
+            })
+            .catch((err) => {
+                setError(err.message);
+            });
     }
 
     return (
@@ -67,6 +80,7 @@ const Login = () => {
                     </a>
                 </p>
             </div>
+            {error && <p className="text-red-500 p-4">{error}</p>}
         </div>
     );
 };
