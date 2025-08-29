@@ -7,7 +7,7 @@ function Navbar() {
   const links =
     <>
       <NavLink>Explore Trips</NavLink>
-
+      <NavLink to='/userdahboard'>Dashbaord</NavLink>
     </>
   return (
     <div className="sticky top-0 z-50 bg-base-100 shadow-md">
@@ -28,22 +28,33 @@ function Navbar() {
         <div className="navbar-end gap-4 font-semibold">
           {links}
           {user?.email ? (
-            <>
-              <img
-                className="w-10 h-10 rounded-full border border-gray-300"
-                src={user?.photoURL}
-                alt="User Avatar"
-              />
-              <button
-                onClick={logOut}
-                className="bg-white font-semibold py-2 px-4 rounded-xl border hover:bg-blue-50"
-              >
-                Log Out
-              </button>
-            </>
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                <div className="w-10 rounded-full">
+                  <img
+                    src={user?.photoURL }
+                    alt="User Avatar"
+                  />
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                <li>
+                  <a className="justify-between">
+                    Profile
+                    <span className="badge">New</span>
+                  </a>
+                </li>
+                <li><a>Settings</a></li>
+                <li>
+                  <Link onClick={logOut}>Logout</Link>
+                </li>
+              </ul>
+            </div>
           ) : (
             <>
-              <NavLink to='/login' className="">Sign In</NavLink>
+              <NavLink to='/login'>Sign In</NavLink>
               <NavLink to='/signup' className="btn bg-cyan-600 text-white rounded-xl">Sign Up</NavLink>
             </>
           )}
