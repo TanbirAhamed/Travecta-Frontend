@@ -5,6 +5,7 @@ import Login from '../pages/auth/Login';
 import Signup from '../pages/auth/Signup';
 import UserDashboard from '../layouts/Dashboard/UserDashboard';
 import MyTrips from '../pages/dashboard/userDashboard/MyTrips';
+import PrivateRoute from './PrivateRoute';
 
 const Routers = () => {
   return (
@@ -13,7 +14,7 @@ const Routers = () => {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/userdahboard' element={<UserDashboard />}>
+        <Route path='/userdahboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
           <Route path='mytrips' element={<MyTrips />} />
         </Route>
       </Route>
