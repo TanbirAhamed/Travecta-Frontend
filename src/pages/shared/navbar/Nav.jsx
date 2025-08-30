@@ -8,7 +8,9 @@ const Nav = () => {
     const links =
         <>
             <NavLink>Explore Trips</NavLink>
-            <NavLink to='/userdahboard'>Dashbaord</NavLink>
+            {
+                user?.email && <NavLink to='/userdahboard'>Dashbaord</NavLink>
+            }
         </>
 
     return (
