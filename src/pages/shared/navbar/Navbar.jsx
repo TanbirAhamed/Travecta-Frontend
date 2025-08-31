@@ -7,7 +7,7 @@ function Navbar() {
   const links =
     <>
       <NavLink>Explore Trips</NavLink>
-      <NavLink to='/userdahboard'>Dashbaord</NavLink>
+      <NavLink to='/userdahboard'>Dashbord</NavLink>
     </>
   return (
     <div className="sticky top-0 z-50 bg-base-100 shadow-md">
