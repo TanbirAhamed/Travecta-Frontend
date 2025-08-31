@@ -1,5 +1,5 @@
 import { GiCommercialAirplane } from "react-icons/gi";
-import { NavLink, Outlet } from "react-router";
+import { Link, NavLink, Outlet } from "react-router";
 import InfoSection from "../../pages/dashboard/userDashboard/InfoSection";
 
 const UserDashboard = () => {
@@ -10,7 +10,7 @@ const UserDashboard = () => {
                     <h1 className="font-bold text-2xl md:text-4xl flex gap-3 items-center">Welcome back, Regular User! <GiCommercialAirplane className="text-cyan-700" /></h1>
                     <p>Manage your trips and travel plans</p>
                 </div>
-                <button className="btn bg-cyan-600 text-white rounded-xl hover:bg-cyan-500"><span className="text-xl">+</span> Create Trips</button>
+                <Link to={'/createtrip'} className="btn bg-cyan-600 text-white rounded-xl hover:bg-cyan-500"><span className="text-xl">+</span> Create Trips</Link>
             </div>
             <InfoSection />
             {/* Tabs + Home Button */}
@@ -26,7 +26,7 @@ const UserDashboard = () => {
                     Expenses
                 </NavLink>
                 <NavLink
-                    to="/userdahboard/mytrips"
+                    to="/userdashboard/mytrips"
                     className={({ isActive }) =>
                         isActive
                             ? "px-4 py-0.5 text-blue-600 bg-white w-52 text-center rounded-xl"

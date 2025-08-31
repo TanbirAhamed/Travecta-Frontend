@@ -6,6 +6,7 @@ import Signup from '../pages/auth/Signup';
 import UserDashboard from '../layouts/Dashboard/UserDashboard';
 import MyTrips from '../pages/dashboard/userDashboard/MyTrips';
 import PrivateRoute from './PrivateRoute';
+import CreateTrips from '../components/CreateTrips';
 
 const Routers = () => {
   return (
@@ -14,9 +15,11 @@ const Routers = () => {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/userdahboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
+        <Route path='/userdashboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
           <Route path='mytrips' element={<MyTrips />} />
+          
         </Route>
+        <Route path='createtrip' element={<CreateTrips />} />
       </Route>
     </Routes>
   );
