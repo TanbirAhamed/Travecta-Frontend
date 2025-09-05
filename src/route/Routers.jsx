@@ -7,6 +7,9 @@ import UserDashboard from '../layouts/Dashboard/UserDashboard';
 import MyTrips from '../pages/dashboard/userDashboard/MyTrips';
 import PrivateRoute from './PrivateRoute';
 import CreateTrips from '../components/CreateTrips';
+import BudgetExpenses from '../pages/dashboard/userDashboard/BudgetExpenses';
+import JoinedTrips from '../pages/dashboard/userDashboard/JoinedTrips';
+import JoinRequests from '../pages/dashboard/userDashboard/JoinRequests';
 
 const Routers = () => {
   return (
@@ -17,7 +20,9 @@ const Routers = () => {
         <Route path='/signup' element={<Signup />} />
         <Route path='/userdashboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
           <Route path='mytrips' element={<MyTrips />} />
-          
+          <Route path='budgetexpenses' element={<BudgetExpenses />} />
+          <Route path='joinedtrips' element={<JoinedTrips />} />
+          <Route path='joinrequests' element={<JoinRequests />} />
         </Route>
         <Route path='createtrip' element={<CreateTrips />} />
       </Route>
