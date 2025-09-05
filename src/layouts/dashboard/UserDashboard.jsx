@@ -13,14 +13,14 @@ const UserDashboard = () => {
                 <Link to={'/createtrip'} className="btn bg-cyan-600 text-white rounded-xl hover:bg-cyan-500"><span className="text-xl">+</span> Create Trips</Link>
             </div>
             <InfoSection />
-            {/* Tabs + Home Button */}
-            <div className="flex flex-col md:flex-row md:items-center justify-center border rounded-xl bg-[#f0f0f0] border-gray-200 mb-6 gap-25 text-sm md:text-base font-medium py-0.5 mt-10">
+            {/* Tabs */}
+            <div className="flex items-center justify-evenly border rounded-full bg-[#696969] border-gray-200 mb-6 text-sm md:text-base font-medium py-1 mt-10">
                 <NavLink
-                    to="/userDashboard/myReviews"
+                    to="/userdashboard/budgetexpenses"
                     className={({ isActive }) =>
                         isActive
-                            ? "px-4 py-0.5 text-blue-600 border-b-2 border-blue-600 w-52 text-center rounded-xl"
-                            : "px-4 py-0.5 text-gray-700 hover:text-blue-600"
+                            ? "px-6 py-1 text-blue-600 bg-white rounded-full shadow-sm"
+                            : "px-6 py-1 text-gray-600 hover:text-blue-600"
                     }
                 >
                     Expenses
@@ -29,28 +29,28 @@ const UserDashboard = () => {
                     to="/userdashboard/mytrips"
                     className={({ isActive }) =>
                         isActive
-                            ? "px-4 py-0.5 text-blue-600 bg-white w-52 text-center rounded-xl"
-                            : "px-4 py-0.5 text-gray-600 hover:text-blue-600"
+                            ? "px-6 py-1 text-blue-600 bg-white rounded-full shadow-sm"
+                            : "px-6 py-1 text-gray-600 hover:text-blue-600"
                     }
                 >
                     My Trips
                 </NavLink>
                 <NavLink
-                    to="/userDashboard/myApplication"
+                    to="/userdashboard/joinedtrips"
                     className={({ isActive }) =>
                         isActive
-                            ? "px-4 py-0.5 text-blue-600 border-b-2 border-blue-600 w-52 text-center rounded-xl"
-                            : "px-4 py-0.5 text-gray-600 hover:text-blue-600"
+                            ? "px-6 py-1 text-blue-600 bg-white rounded-full shadow-sm"
+                            : "px-6 py-1 text-gray-600 hover:text-blue-600"
                     }
                 >
                     Joined Trips
                 </NavLink>
                 <NavLink
-                    to="/userDashboard/myReviews"
+                    to="/userdashboard/joinrequests"
                     className={({ isActive }) =>
                         isActive
-                            ? "px-4 py-0.5 text-blue-600 border-b-2 border-blue-600 w-52 text-center rounded-xl"
-                            : "px-4 py-0.5 text-gray-600 hover:text-blue-600"
+                            ? "px-6 py-1 text-blue-600 bg-white rounded-full shadow-sm"
+                            : "px-6 py-1 text-gray-600 hover:text-blue-600"
                     }
                 >
                     Join Requests
