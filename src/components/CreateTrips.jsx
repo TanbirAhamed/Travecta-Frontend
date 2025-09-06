@@ -88,9 +88,9 @@ const CreateTrips = () => {
   };
 
   return (
-    <div className="mt-10 max-w-6xl mx-auto relative">
+    <div className="mt-10 max-w-6xl mx-auto relative px-4">
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-50">
+        <div className="absolute min-h-screen inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-50">
           <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
           <span className="ml-3 text-lg font-semibold text-gray-700">
             Creating Trip...
@@ -141,7 +141,7 @@ const CreateTrips = () => {
             </div>
 
             {/* Dates */}
-            <div className="mt-3 flex gap-5">
+            <div className="mt-3 flex flex-wrap gap-5">
               <div className="w-full">
                 <label className="block">Start Date *</label>
                 <input
