@@ -24,7 +24,7 @@ const Routers = () => {
           <Route path='joinedtrips' element={<JoinedTrips />} />
           <Route path='joinrequests' element={<JoinRequests />} />
         </Route>
-        <Route path='createtrip' element={<CreateTrips />} />
+        <Route path='createtrip' element={<PrivateRoute><CreateTrips /></PrivateRoute>} />
       </Route>
     </Routes>
   );

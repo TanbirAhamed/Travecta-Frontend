@@ -4,6 +4,7 @@ import { FaCalendarAlt, FaDollarSign, FaUserFriends } from "react-icons/fa";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import useAuth from "../hooks/useAuth";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -12,72 +13,77 @@ const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_ke
 const CreateTrips = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
-  // const axiosSecure = useAxiosSecure();
+  const axiosSecure = useAxiosSecure();
   const categories = ["Adventure", "Culture", "Food"];
 
   const {
     register,
-    handleSubmit,
+    handleSubmit, reset,
     formState: { errors },
   } = useForm();
 
   const [selectedImages, setSelectedImages] = useState([]);
-  const [loading, setLoading] = useState(false); // ✅ loading state
+  const [loading, setLoading] = useState(false);
+
   // Preview for single image
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const previewUrl = URL.createObjectURL(file);
-      setSelectedImages([previewUrl]); // store in state
+      setSelectedImages([previewUrl]);
     }
   };
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const imageFile = { image: data.tripImage[0] };
-    const res = await axiosPublic.post(image_hosting_api, imageFile, {
-      headers: {
-        'content-type': 'multipart/form-data'
-      }
-    });
-    if (res.data.success) {
-      const tripData = {
-        tripName: data.tripName,
-        destination: data.destination,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        category: data.category,
-        description: data.description,
-        budget: parseInt(data.budget),
-        participants: parseInt(data.participants),
-        collaborators: data.collaborators,
-        visibility: data.visibility,
-        tripImage: res.data.data.display_url, // ✅ imgbb URL
-        createdBy: user?.email,
-      };
-      console.log("Trip Data:", tripData);
-      // Save to backend
-      //     const tripRes = await axiosSecure.post("/trips", tripData);
+    try {
+      const imageFile = { image: data.tripImage[0] };
+      const res = await axiosPublic.post(image_hosting_api, imageFile, {
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
 
-      //     if (tripRes.data.insertedId) {
-      //       reset();
-      //       setLoading(false); // ✅ stop loading
-      //       Swal.fire({
-      //         position: "top-end",
-      //         icon: "success",
-      //         title: "Trip created successfully!",
-      //         showConfirmButton: false,
-      //         timer: 1500,
-      //       });
-      //     }
-      //   }
-      // } catch (error) {
-      //   console.error("Error creating trip:", error);
-      //   Swal.fire({
-      //     icon: "error",
-      //     title: "Oops...",
-      //     text: "Something went wrong while creating the trip!",
-      //   });
+      if (res.data.success) {
+        const tripData = {
+          tripName: data.tripName,
+          destination: data.destination,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          category: data.category,
+          description: data.description,
+          budget: parseInt(data.budget),
+          participants: parseInt(data.participants),
+          collaborators: data.collaborators,
+          visibility: data.visibility,
+          tripImage: res.data.data.display_url,
+          createdBy: user?.email,
+        };
+
+        // Save to backend
+        const tripRes = await axiosSecure.post("/trips", tripData);
+
+        if (tripRes.data?.insertedId) {
+          reset();
+          setSelectedImages([])
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Trip created successfully!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong while creating the trip!",
+      });
+      console.error("Trip creation error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
