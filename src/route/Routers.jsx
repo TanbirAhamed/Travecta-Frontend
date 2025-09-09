@@ -10,7 +10,7 @@ import CreateTrips from '../components/CreateTrips';
 import BudgetExpenses from '../pages/dashboard/userDashboard/BudgetExpenses';
 import JoinedTrips from '../pages/dashboard/userDashboard/JoinedTrips';
 import JoinRequests from '../pages/dashboard/userDashboard/JoinRequests';
-import ExploreTrips from '../pages/exploretTrips/ExploreTrips';
+import ExploreTrips from '../pages/exploreTrips/ExploreTrips';
 
 const Routers = () => {
   return (
