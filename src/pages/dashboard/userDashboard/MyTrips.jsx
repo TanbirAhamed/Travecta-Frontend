@@ -1,117 +1,72 @@
+import { useEffect, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
-
-const tripsData = [
-    {
-        id: 111,
-        title: "Tokyo Adventure",
-        location: "Tokyo, Japan",
-        date: "Jun 15, 2024 - Jun 22, 2024",
-        travelers: 3,
-        total: 6,
-        image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-        description: "Explore the vibrant culture and cuisine of Tokyo",
-        type: "Public",
-        budget: '1,800.00',
-        spent: '400'
-    },
-    {
-        id: 133,
-        title: "Tokyo Adventure",
-        location: "Tokyo, Japan",
-        date: "Jun 15, 2024 - Jun 22, 2024",
-        travelers: 3,
-        total: 6,
-        image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-        description: "Explore the vibrant culture and cuisine of Tokyo",
-        type: "Public",
-        budget: '1,800.00',
-        spent: '400'
-    },
-    {
-        id: 11,
-        title: "Tokyo Adventure",
-        location: "Tokyo, Japan",
-        date: "Jun 15, 2024 - Jun 22, 2024",
-        travelers: 3,
-        total: 6,
-        image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-        description: "Explore the vibrant culture and cuisine of Tokyo",
-        type: "Public",
-        budget: '1,800.00',
-        spent: '400'
-    },
-    {
-        id: 2,
-        title: "Tokyo Adventure",
-        location: "Tokyo, Japan",
-        date: "Jun 15, 2024 - Jun 22, 2024",
-        travelers: 3,
-        total: 6,
-        image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-        description: "Explore the vibrant culture and cuisine of Tokyo",
-        type: "Private",
-        budget: '1,800.00',
-        spent: '400'
-    },
-    {
-        id: 3,
-        title: "Tokyo Adventure",
-        location: "Tokyo, Japan",
-        date: "Jun 15, 2024 - Jun 22, 2024",
-        travelers: 3,
-        total: 6,
-        image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-        description: "Explore the vibrant culture and cuisine of Tokyo",
-        type: "Private",
-        budget: '1,800.00',
-        spent: '400'
-    },
-];
+import axios from "axios";
 
 const MyTrips = () => {
+    const [tripsData, setTripsData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTrips = async () => {
+            try {
+                const response = await axios.get("http://localhost:5000/trips"); 
+                console.log("Trips API response:", response.data);
+                const trips = Array.isArray(response.data) ? response.data : [];
+                setTripsData(trips);
+            } catch (error) {
+                console.error("Failed to fetch trips", error);
+                setTripsData([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTrips();
+    }, []);
+
+    if (loading) return <p>Loading trips...</p>;
+    if (!tripsData.length) return <p>No trips found</p>;
+
     return (
         <div className='grid grid-cols-1 md:grid-cols-4 gap-5 mb-5 mt-10'>
-            {tripsData.map((trips) =>
-                <div key={trips.id} className=' bg-white rounded-xl shadow-md p-4 items-center'>
+            {tripsData.map((trip) => (
+                <div key={trip._id} className='bg-white rounded-xl shadow-md p-4 items-center'>
                     <figure className="rounded-xl">
-                        <img src={trips.image} alt={trips.title} className="rounded-xl"/>
+                        <img src={trip.tripImage} alt={trip.tripName} className="rounded-xl" />
                     </figure>
                     <div className='items-center mt-3.5'>
                         <h2 className="font-bold flex justify-between">
-                            {trips.title}
-                            <div className="badge badge-primary">
-                                {trips.type}
-                            </div>
+                            {trip.tripName}
+                            <div className="badge badge-primary">{trip.visibility}</div>
                         </h2>
-                        <p className="mt-2">{trips.description}</p>
+                        <p className="mt-2">{trip.description}</p>
                         <p className="flex items-center gap-2 mt-1">
                             <IoLocationOutline className="text-cyan-600 font-extrabold text-xl" />
-                            {trips.location}
+                            {trip.destination}
                         </p>
                         <p className="flex items-center gap-2 mt-1">
                             <FaRegCalendarAlt className="text-green-700 font-bold text-xl" />
-                            {trips.date}
+                            {trip.startDate} - {trip.endDate}
                         </p>
                         <p className="flex items-center gap-2 mt-1">
                             <FiUsers className="text-amber-600 font-extrabold text-xl" />
-                            {trips.travelers} travelers joined
+                            {trip.participants} travelers joined
                         </p>
                         <p className="flex justify-between items-center gap-2 mt-1">
-                            Budget <span>${trips.budget}</span> 
+                            Budget <span>${trip.budget}</span>
                         </p>
                         <p className="flex justify-between items-center gap-2 mt-1">
-                            Spent <span>${trips.spent}</span> 
+                            Spent <span>${trip.spent || 0}</span>
                         </p>
                         <button className="btn w-full bg-cyan-600 hover:bg-cyan-800 text-white font-semibold rounded-xl mt-3">
                             Manage Trip
-                        </button> 
+                        </button>
                     </div>
                 </div>
-            )}
+            ))}
         </div>
-    )
-}
+    );
+};
 
-export default MyTrips
+export default MyTrips;
