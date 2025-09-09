@@ -1,61 +1,34 @@
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
-
-const tripsData = [
-  {
-    id: 111,
-    title: "Tokyo Adventure",
-    location: "Tokyo, Japan",
-    date: "Jun 15, 2024 - Jun 22, 2024",
-    travelers: 3,
-    total: 6,
-    image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-    description: "Explore the vibrant culture and cuisine of Tokyo",
-  },
-  {
-    id: 133,
-    title: "Tokyo Adventure",
-    location: "Tokyo, Japan",
-    date: "Jun 15, 2024 - Jun 22, 2024",
-    travelers: 3,
-    total: 6,
-    image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-    description: "Explore the vibrant culture and cuisine of Tokyo",
-  },
-  {
-    id: 11,
-    title: "Tokyo Adventure",
-    location: "Tokyo, Japan",
-    date: "Jun 15, 2024 - Jun 22, 2024",
-    travelers: 3,
-    total: 6,
-    image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-    description: "Explore the vibrant culture and cuisine of Tokyo",
-  },
-  {
-    id: 2,
-    title: "Tokyo Adventure",
-    location: "Tokyo, Japan",
-    date: "Jun 15, 2024 - Jun 22, 2024",
-    travelers: 3,
-    total: 6,
-    image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-    description: "Explore the vibrant culture and cuisine of Tokyo",
-  },
-  {
-    id: 3,
-    title: "Tokyo Adventure",
-    location: "Tokyo, Japan",
-    date: "Jun 15, 2024 - Jun 22, 2024",
-    travelers: 3,
-    total: 6,
-    image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-    description: "Explore the vibrant culture and cuisine of Tokyo",
-  },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router";
 
 const FeaturedTrips = () => {
+  const [tripsData, setTripsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/trips");
+        const trips = Array.isArray(response.data) ? response.data : [];
+        setTripsData(trips);
+      } catch (error) {
+        setTripsData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTrips();
+  }, []);
+
+  if (loading) return <p>Loading trips...</p>;
+
+  const publicTrips = tripsData.filter(trip => trip.visibility.toLowerCase() === "public");
+
+  if (!publicTrips.length) return <p>No public trips found</p>;
 
   return (
     <div className="justify-items-center items-center mt-14 max-w-7xl mx-auto">
@@ -66,45 +39,63 @@ const FeaturedTrips = () => {
         </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
-        {tripsData.slice(0, 3).map((trip) => (
-          <div key={trip.id} className="card bg-base-100 shadow-md h-96">
-            <figure className="">
-              <img src={trip.image} alt={trip.title} />
-            </figure>
-            <div className="card-body">
+        {publicTrips.slice(0, 3).map((trip) => (
+          <div key={trip._id} className="bg-white rounded-xl shadow-md p-4 items-center">
+            {/* Image with badges */}
+            <div className="relative">
+              <img
+                src={trip.tripImage}
+                alt={trip.tripName}
+                className="rounded-xl"
+              />
+              <div className="absolute top-2 left-2">
+                <span className="bg-white text-black text-xs font-medium px-2 py-1 rounded-md shadow">
+                  Public
+                </span>
+              </div>
+              {trip.category && (
+                <div className="absolute top-2 right-2">
+                  <span className="bg-white text-black text-xs font-medium px-2 py-1 rounded-md shadow">
+                    {trip.category}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="card-body p-0 mt-4">
               <h2 className="card-title font-bold">
-                {trip.title}
+                {trip.tripName}
                 <div className="badge badge-primary">
-                  {trip.travelers}/{trip.total}
+                  {trip.participants}/{trip.participants}
                 </div>
               </h2>
               <p className="mt-1">{trip.description}</p>
-              <p className="flex items-center gap-2 mt-0.5">
+              <p className="flex items-center gap-2 mt-1">
                 <IoLocationOutline className="text-cyan-600 font-extrabold text-xl" />
-                {trip.location}
+                {trip.destination}
               </p>
-              <p className="flex items-center gap-2">
+              <p className="flex items-center gap-2 mt-1">
                 <FaRegCalendarAlt className="text-green-700 font-bold text-xl" />
-                {trip.date}
+                {trip.startDate} - {trip.endDate}
               </p>
-              <p className="flex items-center gap-2">
+              <p className="flex items-center gap-2 mt-1">
                 <FiUsers className="text-amber-600 font-extrabold text-xl" />
-                {trip.travelers} travelers joined
+                {trip.participants} travelers joined
               </p>
-              <button className="btn bg-cyan-600 text-white font-bold rounded-2xl mt-2.5">
+              <p className="flex justify-between items-center gap-2 mt-1">
+                Budget <span>${trip.budget}</span>
+              </p>
+              <button className="btn bg-cyan-600 hover:bg-cyan-800 text-white font-bold rounded-2xl mt-2.5">
                 View Details
               </button>
             </div>
           </div>
         ))}
       </div>
-        <div className="text-center mt-8 justify-items-center">
-          <button           
-            className="btn bg-white text-black/95 font-bold rounded-xl px-8 hover:bg-amber-500 hover:text-white"
-          >
-            View All Trips
-          </button>
-        </div>
+      <div className="text-center mt-8 justify-items-center">
+        <Link to='/exploretrips' className="btn bg-white text-black/95 font-bold rounded-xl px-8 hover:bg-amber-500 hover:text-white">
+          View All Trips
+        </Link>
+      </div>
     </div>
   );
 };

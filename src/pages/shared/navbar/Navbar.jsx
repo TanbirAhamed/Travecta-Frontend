@@ -6,7 +6,7 @@ function Navbar() {
   const { user, logOut } = useAuth();
   const links =
     <>
-      <NavLink>Explore Trips</NavLink>
+      <NavLink to='/exploretrips'>Explore Trips</NavLink>
       <NavLink to='/userdahboard'>Dashbord</NavLink>
     </>
   return (
