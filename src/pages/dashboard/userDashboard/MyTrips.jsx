@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Spiral } from 'ldrs/react'
 import 'ldrs/react/Spiral.css'
 import useAuth from "../../../hooks/useAuth";
+import { Link } from "react-router";
 
 const MyTrips = () => {
     const { user } = useAuth();
@@ -59,9 +60,9 @@ const MyTrips = () => {
                         <p className="flex justify-between items-center gap-2 mt-1">
                             Spent <span>${trip?.spent || 0}</span>
                         </p>
-                        <button className="btn w-full bg-cyan-600 hover:bg-cyan-800 text-white font-semibold rounded-xl mt-3">
+                        <Link to='/viewdetails' className="btn w-full bg-cyan-600 hover:bg-cyan-800 text-white font-semibold rounded-xl mt-3">
                             Manage Trip
-                        </button>
+                        </Link>
                     </div>
                 </div>
             ))}

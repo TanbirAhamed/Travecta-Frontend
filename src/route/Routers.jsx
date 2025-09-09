@@ -11,6 +11,7 @@ import BudgetExpenses from '../pages/dashboard/userDashboard/BudgetExpenses';
 import JoinedTrips from '../pages/dashboard/userDashboard/JoinedTrips';
 import JoinRequests from '../pages/dashboard/userDashboard/JoinRequests';
 import ExploreTrips from '../pages/exploreTrips/ExploreTrips';
+import ViewDetails from '../pages/viewDetails/ViewDetails';
 
 const Routers = () => {
   return (
@@ -27,6 +28,7 @@ const Routers = () => {
         </Route>
         <Route path='createtrip' element={<PrivateRoute><CreateTrips /></PrivateRoute>} />
         <Route path='exploretrips' element={<ExploreTrips />} />
+        <Route path='viewdetails' element={<ViewDetails />} />
       </Route>
     </Routes>
   );

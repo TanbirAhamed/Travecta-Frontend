@@ -1,33 +1,29 @@
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
+import { Spiral } from "ldrs/react";
 
 const FeaturedTrips = () => {
-  const [tripsData, setTripsData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTrips = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/trips");
-        const trips = Array.isArray(response.data) ? response.data : [];
-        setTripsData(trips);
-      } catch (error) {
-        setTripsData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTrips();
-  }, []);
-
-  if (loading) return <p>Loading trips...</p>;
-
+  const axiosPublic = useAxiosPublic();
+  const { data: tripsData = [], isLoading: loading } = useQuery({
+    queryKey: ['trips'],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/trips`);
+      return res.data
+    }
+  })
   const publicTrips = tripsData.filter(trip => trip.visibility.toLowerCase() === "public");
 
+  if (loading) return <div className="flex justify-center items-center">
+    <Spiral
+      size="40"
+      speed="0.9"
+      color="black"
+    />
+  </div>
   if (!publicTrips.length) return <p>No public trips found</p>;
 
   return (
@@ -84,9 +80,14 @@ const FeaturedTrips = () => {
               <p className="flex justify-between items-center gap-2 mt-1">
                 Budget <span>${trip.budget}</span>
               </p>
-              <button className="btn bg-cyan-600 hover:bg-cyan-800 text-white font-bold rounded-2xl mt-2.5">
-                View Details
-              </button>
+              <div className="w-full flex gap-3 mt-2.5">
+                <button className="flex-1 btn bg-cyan-600 hover:bg-cyan-800 text-white border-gray-300  font-bold rounded-2xl">
+                  View Details
+                </button>
+                <button className="flex-1 btn bg-black text-white font-bold rounded-2xl hover:bg-gray-800">
+                  Request to Join
+                </button>
+              </div>
             </div>
           </div>
         ))}
