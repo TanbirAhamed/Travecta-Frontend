@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
@@ -118,9 +117,14 @@ const ExploreTrips = () => {
                             <p className="flex justify-between items-center gap-2 mt-1">
                                 Budget <span>${trip?.budget}</span>
                             </p>
-                            <button className="btn bg-cyan-600 hover:bg-cyan-800 text-white font-bold rounded-2xl mt-2.5">
-                                View Details
-                            </button>
+                            <div className="w-full flex gap-3 mt-2.5">
+                                <button className="flex-1 btn bg-cyan-600 hover:bg-cyan-800 text-white border-gray-300  font-bold rounded-2xl">
+                                    View Details
+                                </button>
+                                <button className="flex-1 btn bg-black text-white font-bold rounded-2xl hover:bg-gray-800">
+                                    Request to Join
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))}
