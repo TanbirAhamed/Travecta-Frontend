@@ -12,6 +12,10 @@ import JoinedTrips from '../pages/dashboard/userDashboard/JoinedTrips';
 import JoinRequests from '../pages/dashboard/userDashboard/JoinRequests';
 import ExploreTrips from '../pages/exploreTrips/ExploreTrips';
 import ViewDetails from '../pages/viewDetails/ViewDetails';
+import Overview from '../pages/viewDetails/Overview';
+import Itinerary from '../pages/viewDetails/Itinerary';
+import Budget from '../pages/viewDetails/Budget';
+import Photos from '../pages/viewDetails/Photos';
 
 const Routers = () => {
   return (
@@ -28,7 +32,12 @@ const Routers = () => {
         </Route>
         <Route path='createtrip' element={<PrivateRoute><CreateTrips /></PrivateRoute>} />
         <Route path='exploretrips' element={<ExploreTrips />} />
-        <Route path='viewdetails' element={<ViewDetails />} />
+        <Route path='/viewdetails' element={<ViewDetails />}>
+          <Route path='overview' element={<Overview />} />
+          <Route path='itinerary' element={<Itinerary />} />
+          <Route path='budget' element={<Budget />} />
+          <Route path='photos' element={<Photos />} />
+        </Route>
       </Route>
     </Routes>
   );
