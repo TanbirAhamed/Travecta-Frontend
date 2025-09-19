@@ -5,6 +5,7 @@ import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useQuery } from '@tanstack/react-query';
 import { Spiral } from 'ldrs/react'
 import 'ldrs/react/Spiral.css'
+import { Link } from "react-router";
 
 const ExploreTrips = () => {
     const axiosPublic = useAxiosPublic();
@@ -118,9 +119,11 @@ const ExploreTrips = () => {
                                 Budget <span>${trip?.budget}</span>
                             </p>
                             <div className="w-full flex gap-3 mt-2.5">
-                                <button className="flex-1 btn bg-cyan-600 hover:bg-cyan-800 text-white border-gray-300  font-bold rounded-2xl">
-                                    View Details
-                                </button>
+                                <Link to={`/details/${trip._id}`}>
+                                    <button className="flex-1 btn bg-cyan-600 hover:bg-cyan-800 text-white border-gray-300  font-bold rounded-2xl">
+                                        View Details
+                                    </button>
+                                </Link>
                                 <button className="flex-1 btn bg-black text-white font-bold rounded-2xl hover:bg-gray-800">
                                     Request to Join
                                 </button>

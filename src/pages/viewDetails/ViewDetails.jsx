@@ -4,23 +4,55 @@ import { FiUsers } from "react-icons/fi";
 import { BiDollar } from "react-icons/bi";
 import { FiEdit } from "react-icons/fi";
 import Tabs from "./Tabs";
-import { Outlet } from "react-router";
+import { Outlet, useParams } from "react-router";
+import { useEffect, useState } from "react";
 
 const ViewDetails = () => {
+  const { id } = useParams();
+  const [trip, setTrip] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/trip/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTrip(data);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (!trip) return <p className="text-gray-600">Trip not found.</p>;
+  // Format dates (optional chaining ensures no crash)
+  const formatDate = (dateStr) => {
+    return dateStr
+      ? new Date(dateStr).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+      : "";
+  };
+
   return (
-    <div className="mt-14 max-w-7xl mx-auto px-4">
+    <div className="mt-14 max-w-[1536px] mx-auto px-4">
       <div className="bg-white shadow-md rounded-lg overflow-hidden ">
         {/* Trip Header Image */}
         <div className="h-52 bg-black w-full relative">
+          <img
+            src={trip?.tripImage}
+            alt={trip?.tripName}
+            className="absolute inset-0 w-full h-full object-cover opacity-70"
+          />
           <div className="absolute bottom-4 left-6 text-white">
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              Tokyo Adventure
+              {trip?.tripName}
               <span className="bg-white text-gray-800 text-xs font-medium px-2 py-1 rounded-full">
-                upcoming
+                {trip?.category}
               </span>
             </h1>
             <p className="flex items-center gap-2 text-gray-200 mt-1">
-              <IoLocationOutline /> Tokyo, Japan
+              <IoLocationOutline /> {trip?.destination}
             </p>
           </div>
         </div>
@@ -32,15 +64,15 @@ const ViewDetails = () => {
             <div className="flex flex-wrap gap-6 text-gray-600 text-sm">
               <div className="flex items-center gap-2">
                 <FaRegCalendarAlt className="text-gray-500" />
-                12/15/2024 - 12/22/2024
+                {formatDate(trip?.startDate)} - {formatDate(trip?.endDate)}
               </div>
               <div className="flex items-center gap-2">
                 <BiDollar className="text-gray-500" />
-                $1800 / $2500
+                ${trip?.budget}
               </div>
               <div className="flex items-center gap-2">
                 <FiUsers className="text-gray-500" />
-                3 travelers
+                {trip?.participants} travelers
               </div>
             </div>
 

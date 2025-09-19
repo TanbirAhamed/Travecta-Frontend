@@ -32,8 +32,10 @@ const Routers = () => {
         </Route>
         <Route path='createtrip' element={<PrivateRoute><CreateTrips /></PrivateRoute>} />
         <Route path='exploretrips' element={<ExploreTrips />} />
-        <Route path='/viewdetails' element={<ViewDetails />}>
-          <Route path='overview' element={<Overview />} />
+        <Route
+          path='/details/:id' element={<ViewDetails />}
+        >
+          <Route index element={<Overview />} />
           <Route path='itinerary' element={<Itinerary />} />
           <Route path='budget' element={<Budget />} />
           <Route path='photos' element={<Photos />} />
