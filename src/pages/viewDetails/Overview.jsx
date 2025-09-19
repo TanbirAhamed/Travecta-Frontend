@@ -1,5 +1,9 @@
+import { useOutletContext } from "react-router";
 
 const Overview = () => {
+    const { trip } = useOutletContext();
+
+    if (!trip) return null;
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-7">
             {/* Left Content */}
@@ -8,9 +12,7 @@ const Overview = () => {
                 <div className="bg-white shadow-sm rounded-lg p-5 border border-black/15">
                     <h2 className="font-bold mb-5">About This Trip</h2>
                     <p className="text-gray-600">
-                        Exploring the vibrant culture and cuisine of Tokyo with friends.
-                        We’ll visit temples, try authentic ramen, and experience the
-                        bustling city life.
+                        {trip?.description}
                     </p>
                 </div>
 
@@ -19,7 +21,7 @@ const Overview = () => {
                     <h2 className="font-bold mb-5">Budget Overview</h2>
                     <div className="flex justify-between mb-2.5">
                         <span>Total Budget</span>
-                        <span className="font-bold">$2500</span>
+                        <span className="font-bold">${trip?.budget}</span>
                     </div>
                     <div className="flex justify-between mb-2.5">
                         <span>Spent</span>

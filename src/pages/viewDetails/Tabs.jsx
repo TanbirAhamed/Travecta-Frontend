@@ -5,7 +5,8 @@ const Tabs = () => {
   return (
     <div className="flex border-b mt-7 font-semibold">
       <NavLink
-        to="overview"
+        to="."
+        end
         className={({ isActive }) =>
           isActive
             ? "px-6 py-1 text-blue-600 "
