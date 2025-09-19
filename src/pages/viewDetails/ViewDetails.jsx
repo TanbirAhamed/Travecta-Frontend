@@ -88,7 +88,7 @@ const ViewDetails = () => {
 
       {/* Tabs */}
       <Tabs />
-      <Outlet />
+      <Outlet context={{ trip }} />
     </div>
   );
 };
