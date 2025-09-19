@@ -13,7 +13,7 @@ const ViewDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/trip/${id}`)
+    fetch(`http://localhost:5000/trips/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setTrip(data);
