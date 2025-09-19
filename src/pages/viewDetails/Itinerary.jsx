@@ -1,28 +1,69 @@
 import { useState } from "react";
-import { FaPlaneArrival, FaHotel, FaUtensils, FaLandmark } from "react-icons/fa";
-import { MdDinnerDining } from "react-icons/md";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 import ActivityItem from "./ActivityItem";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import { useOutletContext } from "react-router";
 
 const Itinerary = () => {
-    const [days, setDays] = useState([
-        {
-            title: "Day 1 - Arrival & Shibuya",
-            date: "Sunday, Dec 15",
-            activities: [
-                { time: "14:00", title: "Arrive at Narita Airport", Icon: FaPlaneArrival },
-                { time: "16:00", title: "Check into Hotel", Icon: FaHotel },
-                { time: "18:00", title: "Shibuya Crossing & Dinner", Icon: MdDinnerDining },
-            ],
-        },
-    ]);
+    const { trip } = useOutletContext();
+    const axiosSecure = useAxiosSecure();
+    const axiosPublic = useAxiosPublic();
+    const queryClient = useQueryClient();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newDay, setNewDay] = useState({
         title: "",
         date: "",
-        activities: [{ time: "", title: "", Icon: FaLandmark }],
+        activities: [{ time: "", title: "" }],
     });
 
+    // Fetch itinerary
+    const { data: days = [], isLoading } = useQuery({
+        queryKey: ["itinerary", trip?._id],
+        queryFn: async () => {
+            if (!trip?._id) return [];
+            const res = await axiosPublic.get(`/itinerary?tripId=${trip._id}`);
+            return res.data.itinerary || [];
+        },
+        enabled: !!trip?._id,
+    });
+
+    // Mutation to add new day
+    const mutation = useMutation({
+        mutationFn: async (day) => {
+            if (!trip?._id) throw new Error("Trip not found!");
+            return axiosSecure.post("/itinerary", {
+                tripId: trip._id,
+                tripName: trip.tripName,
+                createdBy: trip.createdBy,
+                day,
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(["itinerary", trip._id]); // refetch
+            Swal.fire({
+                icon: "success",
+                title: "Added!",
+                text: "Itinerary day added successfully",
+                timer: 1500,
+                showConfirmButton: false,
+            });
+            setNewDay({ title: "", date: "", activities: [{ time: "", title: "" }] });
+            setIsModalOpen(false);
+        },
+        onError: (err) => {
+            
+            Swal.fire({
+                icon: "error",
+                title: "Failed!",
+                text: "Could not add itinerary day. Try again.",
+            });
+        },
+    });
+
+    // Handlers
     const handleChange = (field, value) => {
         setNewDay({ ...newDay, [field]: value });
     };
@@ -36,16 +77,34 @@ const Itinerary = () => {
     const addActivityField = () => {
         setNewDay({
             ...newDay,
-            activities: [...newDay.activities, { time: "", title: "", Icon: FaLandmark }],
+            activities: [...newDay.activities, { time: "", title: "" }],
         });
     };
 
     const handleSubmit = () => {
-        if (!newDay.title || !newDay.date) return;
-        setDays([...days, newDay]);
-        setNewDay({ title: "", date: "", activities: [{ time: "", title: "", Icon: FaLandmark }] });
-        setIsModalOpen(false);
+        if (!newDay.title || !newDay.date) {
+            Swal.fire({
+                icon: "error",
+                title: "Incomplete!",
+                text: "Please fill day title and date.",
+            });
+            return;
+        }
+
+        const hasActivity = newDay.activities.some(act => act.title.trim() !== "");
+        if (!hasActivity) {
+            Swal.fire({
+                icon: "error",
+                title: "Incomplete!",
+                text: "Please add at least one activity with a title.",
+            });
+            return;
+        }
+
+        mutation.mutate(newDay);
     };
+
+    if (isLoading) return <p>Loading itinerary...</p>;
 
     return (
         <div className="mt-7 space-y-6">
@@ -55,15 +114,9 @@ const Itinerary = () => {
                         <h2 className="font-bold text-lg">{day.title}</h2>
                         <p className="text-sm text-gray-500">{day.date}</p>
                     </div>
-
                     <div className="space-y-3">
                         {day.activities.map((activity, idx) => (
-                            <ActivityItem
-                                key={idx}
-                                time={activity.time}
-                                title={activity.title}
-                                Icon={activity.Icon}
-                            />
+                            <ActivityItem key={idx} time={activity.time} title={activity.title} />
                         ))}
                     </div>
                 </div>
@@ -81,7 +134,7 @@ const Itinerary = () => {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
                     <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg">
                         <h2 className="text-lg font-bold mb-4">Add New Day</h2>
 
@@ -134,24 +187,15 @@ const Itinerary = () => {
                             </div>
                         ))}
 
-                        <button
-                            onClick={addActivityField}
-                            className="text-sm text-blue-600 mb-4"
-                        >
+                        <button onClick={addActivityField} className="text-sm text-blue-600 mb-4">
                             + Add Another Activity
                         </button>
 
                         <div className="flex justify-end gap-2">
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="px-4 py-2 rounded bg-gray-200"
-                            >
+                            <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded bg-gray-200">
                                 Cancel
                             </button>
-                            <button
-                                onClick={handleSubmit}
-                                className="px-4 py-2 rounded bg-black text-white"
-                            >
+                            <button onClick={handleSubmit} className="px-4 py-2 rounded bg-black text-white">
                                 Save Day
                             </button>
                         </div>

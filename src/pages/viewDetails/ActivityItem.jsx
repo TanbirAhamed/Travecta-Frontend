@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { BsCheckCircle } from "react-icons/bs";
+import { BsCheckCircle, BsCircle } from "react-icons/bs";
 
-const ActivityItem = ({ time, title, Icon }) => {
+const ActivityItem = ({ time, title }) => {
   const [checked, setChecked] = useState(false);
 
   return (
@@ -12,7 +12,12 @@ const ActivityItem = ({ time, title, Icon }) => {
     >
       {/* Left side */}
       <div className="flex items-center gap-3">
-        <Icon className={`text-gray-600 text-lg ${checked ? "text-green-600" : ""}`} />
+        {/* Circle icon changes when checked */}
+        {checked ? (
+          <BsCheckCircle className="text-green-600 text-xl" />
+        ) : (
+          <BsCircle className="text-gray-400 text-xl" />
+        )}
         <div>
           <p className="text-sm text-gray-500">{time}</p>
           <p className={`font-medium ${checked ? "line-through text-gray-500" : ""}`}>
@@ -21,7 +26,7 @@ const ActivityItem = ({ time, title, Icon }) => {
         </div>
       </div>
 
-      {/* Checkbox */}
+      {/* Right side checkbox indicator */}
       <div>
         {checked ? (
           <BsCheckCircle className="text-green-600 text-xl" />
