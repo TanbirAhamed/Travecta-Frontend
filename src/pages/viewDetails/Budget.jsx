@@ -8,15 +8,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 const Budget = () => {
   const { trip } = useOutletContext();
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient(); // <-- important
+  const queryClient = useQueryClient();
   const totalBudget = trip?.budget || 0;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm();
 
-  // -------------------------
   // Fetch expenses
-  // -------------------------
   const { data: expenses = [], isLoading } = useQuery({
     queryKey: ["expenses", trip?._id],
     queryFn: async () => {
@@ -33,9 +31,8 @@ const Budget = () => {
     ? ((totalSpent / totalBudget) * 100).toFixed(1)
     : 0;
 
-  // -------------------------
+
   // Add expense mutation
-  // -------------------------
   const mutation = useMutation({
     mutationFn: async (expenseData) => {
       return axiosSecure.post("/expenses", expenseData);
