@@ -16,7 +16,8 @@ const UserDashboard = () => {
             {/* Tabs */}
             <div className="flex flex-wrap items-center justify-evenly border rounded-full bg-[#696969] border-gray-200 mb-6 text-sm md:text-base font-medium py-1 mt-10">
                 <NavLink
-                    to="/userdashboard/budgetexpenses"
+                    to="."
+                    end
                     className={({ isActive }) =>
                         isActive
                             ? "px-6 py-1 text-blue-600 bg-white rounded-full shadow-sm "

@@ -16,6 +16,7 @@ import Overview from '../pages/viewDetails/Overview';
 import Itinerary from '../pages/viewDetails/Itinerary';
 import Budget from '../pages/viewDetails/Budget';
 import Photos from '../pages/viewDetails/Photos';
+import AdminDashboard from '../layouts/dashboard/adminDashboard';
 
 const Routers = () => {
   return (
@@ -24,9 +25,10 @@ const Routers = () => {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
+        <Route path='/admindashboard' element={<AdminDashboard />}></Route>
         <Route path='/userdashboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
           <Route path='mytrips' element={<MyTrips />} />
-          <Route path='budgetexpenses' element={<BudgetExpenses />} />
+          <Route index element={<BudgetExpenses />} />
           <Route path='joinedtrips' element={<JoinedTrips />} />
           <Route path='joinrequests' element={<JoinRequests />} />
         </Route>

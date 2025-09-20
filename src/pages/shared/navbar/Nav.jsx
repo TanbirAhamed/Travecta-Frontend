@@ -1,4 +1,3 @@
-import React from 'react';
 import useAuth from '../../../hooks/useAuth';
 import { Link, NavLink } from 'react-router';
 import { GiAirplaneDeparture } from "react-icons/gi";
@@ -53,6 +52,9 @@ const Nav = () => {
                                         Profile
                                     </a>
                                 </li>
+                                <Link to='admindashboard'>
+                                Admin
+                                </Link>
                                 <li><a>Settings</a></li>
                                 <li>
                                     <Link onClick={logOut}>Logout</Link>
