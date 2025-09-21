@@ -1,9 +1,12 @@
+import Home from "../../pages/dashboard/adminDashboard/Home"
 
 
 
 const AdminDashboard = () => {
   return (
-    <div>adminDashboard</div>
+    <div className="mt-6 max-w-[1536px] mx-auto px-4">
+      <Home />
+    </div>
   )
 }
 

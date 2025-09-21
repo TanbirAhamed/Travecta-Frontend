@@ -17,6 +17,8 @@ import Itinerary from '../pages/viewDetails/Itinerary';
 import Budget from '../pages/viewDetails/Budget';
 import Photos from '../pages/viewDetails/Photos';
 import AdminDashboard from '../layouts/dashboard/adminDashboard';
+import AllTrips from '../pages/dashboard/adminDashboard/AllTrips';
+import AllUsers from '../pages/dashboard/adminDashboard/AllUsers';
 
 const Routers = () => {
   return (
@@ -25,7 +27,12 @@ const Routers = () => {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/admindashboard' element={<AdminDashboard />}></Route>
+        <Route path="/admindashboard" element={<AdminDashboard />}>
+          <Route index element={<AllTrips />} />
+          <Route path='allusers' element={<AllUsers />} />
+        </Route>
+
+
         <Route path='/userdashboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
           <Route path='mytrips' element={<MyTrips />} />
           <Route index element={<BudgetExpenses />} />
