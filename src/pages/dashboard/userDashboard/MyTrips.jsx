@@ -60,7 +60,7 @@ const MyTrips = () => {
                         <p className="flex justify-between items-center gap-2 mt-1">
                             Spent <span>${trip?.spent || 0}</span>
                         </p>
-                        <Link to='/viewdetails' className="btn w-full bg-cyan-600 hover:bg-cyan-800 text-white font-semibold rounded-xl mt-3">
+                        <Link to={`/details/${trip?._id}`} className="btn w-full bg-cyan-600 hover:bg-cyan-800 text-white font-semibold rounded-xl mt-3">
                             Manage Trip
                         </Link>
                     </div>
