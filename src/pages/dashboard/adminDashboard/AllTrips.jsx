@@ -1,87 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { FiMoreVertical, FiUsers, FiTrash2 } from "react-icons/fi";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const AllTrips = () => {
-    const [openIndex, setOpenIndex] = useState(null);
-    const dropdownRef = useRef(null);
-  const trips = [
-    {
-      trip: "European Adventure",
-      location: "Paris, Rome, Barcelona",
-      creator: "John Doe",
-      avatar: "https://i.pravatar.cc/40?img=1",
-      visibility: "Public",
-      category: "Cultural",
-      dates: "Jun 15, 2024 - Jun 30, 2024",
-      participants: "4/6",
-    },
-    {
-      trip: "Tokyo Food Tour",
-      location: "Tokyo, Japan",
-      creator: "Mike Chen",
-      avatar: "https://i.pravatar.cc/40?img=2",
-      visibility: "Public",
-      category: "Food & Culinary",
-      dates: "Aug 10, 2024 - Aug 20, 2024",
-      participants: "2/4",
-    },
-    {
-      trip: "Bali Wellness Retreat",
-      location: "Ubud, Bali",
-      creator: "John Doe",
-      avatar: "https://i.pravatar.cc/40?img=3",
-      visibility: "Private",
-      category: "Wellness",
-      dates: "Sep 5, 2024 - Sep 15, 2024",
-      participants: "3/8",
-    },
-    {
-      trip: "Iceland Northern Lights",
-      location: "Reykjavik, Iceland",
-      creator: "Alex Thompson",
-      avatar: "https://i.pravatar.cc/40?img=4",
-      visibility: "Public",
-      category: "Adventure",
-      dates: "Nov 20, 2024 - Nov 28, 2024",
-      participants: "1/5",
-    },
-    {
-      trip: "Morocco Desert Safari",
-      location: "Marrakech, Morocco",
-      creator: "Fatima Al-Zahra",
-      avatar: "https://i.pravatar.cc/40?img=5",
-      visibility: "Public",
-      category: "Adventure",
-      dates: "Oct 12, 2024 - Oct 22, 2024",
-      participants: "5/8",
-    },
-    {
-      trip: "New Zealand Road Trip",
-      location: "Auckland to Queenstown",
-      creator: "James Wilson",
-      avatar: "https://i.pravatar.cc/40?img=6",
-      visibility: "Public",
-      category: "Adventure",
-      dates: "Dec 1, 2024 - Dec 20, 2024",
-      participants: "2/4",
-    },
-  ];
+  const [openIndex, setOpenIndex] = useState(null);
+  const axiosSecure = useAxiosSecure();
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        setOpenIndex(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
+  // Fetch trips from backend
+  const { data: trips = [], isLoading } = useQuery({
+    queryKey: ["trips"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/trips");
+      return res.data;
+    },
+  });
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  if (isLoading) return <div>Loading....</div>
 
   return (
     <div className="mt-7">
@@ -114,7 +49,7 @@ const AllTrips = () => {
       {/* Table */}
       <div className="bg-white border border-black/15 rounded-xl shadow">
         <div className="px-6 py-4 font-semibold text-gray-700">
-          All Trips (6)
+          All Trips ({trips?.length || 0})
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
@@ -130,46 +65,65 @@ const AllTrips = () => {
               </tr>
             </thead>
             <tbody>
-              {trips.map((t, i) => (
-                <tr key={i} className="border-b border-black/15 hover:bg-gray-50">
+              {trips?.map((t, i) => (
+                <tr
+                  key={t?._id}
+                  className="border-b border-black/15 hover:bg-gray-50"
+                >
+                  {/* Trip info */}
                   <td className="px-6 py-4">
                     <div>
-                      <div className="font-medium">{t.trip}</div>
-                      <div className="text-gray-500 text-xs">{t.location}</div>
+                      <div className="font-medium">{t?.tripName}</div>
+                      <div className="text-gray-500 text-xs">
+                        {t?.destination}
+                      </div>
                     </div>
                   </td>
+
+                  {/* Creator */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <img
-                        src={t.avatar}
-                        alt={t.creator}
-                        className="w-8 h-8 rounded-full"
+                        src={t?.tripImage}
+                        alt={t?.createdBy}
+                        className="w-8 h-8 rounded-full object-cover"
                       />
-                      <span>{t.creator}</span>
+                      <span>{t?.createdBy}</span>
                     </div>
                   </td>
+
+                  {/* Visibility */}
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2 py-1 rounded-md text-xs font-medium ${
-                        t.visibility === "Public"
-                          ? "bg-gray-900 text-white"
-                          : "bg-gray-200 text-gray-700"
-                      }`}
+                      className={`px-2 py-1 rounded-md text-xs font-medium ${t?.visibility === "public"
+                        ? "bg-gray-900 text-white"
+                        : "bg-gray-200 text-gray-700"
+                        }`}
                     >
-                      {t.visibility}
+                      {t?.visibility}
                     </span>
                   </td>
+
+                  {/* Category */}
                   <td className="px-6 py-4">
                     <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs">
-                      {t.category}
+                      {t?.category}
                     </span>
                   </td>
-                  <td className="px-6 py-4">{t.dates}</td>
+
+                  {/* Dates */}
+                  <td className="px-6 py-4">
+                    {t?.startDate} - {t?.endDate}
+                  </td>
+
+                  {/* Participants */}
                   <td className="px-6 py-4 flex items-center gap-1">
                     <FiUsers size={16} />
-                    {t.participants}
+                    {t?.participants || 0}
                   </td>
-                  <td className="px-6 py-4 relative" ref={dropdownRef}>
+
+                  {/* Actions */}
+                  <td className="px-6 py-4 relative">
                     <button
                       onClick={() =>
                         setOpenIndex(openIndex === i ? null : i)
@@ -183,13 +137,15 @@ const AllTrips = () => {
                       <div className="absolute right-6 p-1 mt-2 w-40 bg-white border border-black/15 rounded-lg shadow-lg z-10">
                         <button
                           className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                          onClick={() => alert(`Viewing details of ${t.trip}`)}
+                          onClick={() =>
+                            alert(`Viewing details of ${t?.tripName}`)
+                          }
                         >
                           View Details
                         </button>
                         <button
                           className="flex items-center gap-2 w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                          onClick={() => alert(`Removing ${t.trip}`)}
+                          onClick={() => alert(`Removing ${t?.tripName}`)}
                         >
                           <FiTrash2 size={16} />
                           Remove Trip
