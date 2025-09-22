@@ -8,7 +8,7 @@ const AllUsers = () => {
   const axiosSecure = useAxiosSecure();
 
   // Fetch users
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
       const res = await axiosSecure.get("/users");
@@ -17,7 +17,7 @@ const AllUsers = () => {
   });
 
   // Fetch trips
-  const { data: trips = [] } = useQuery({
+  const { data: trips = [], isLoading: loadingTrips } = useQuery({
     queryKey: ["trips"],
     queryFn: async () => {
       const res = await axiosSecure.get("/trips");
@@ -39,6 +39,8 @@ const AllUsers = () => {
 
     return { created, joined };
   };
+
+  if (isLoading || loadingTrips) return <div>Loading....</div>
 
   return (
     <div className="mt-7">
@@ -63,7 +65,7 @@ const AllUsers = () => {
                 const { created, joined } = getTripsData(u);
                 return (
                   <tr
-                    key={u?._id || u?.email || i}
+                    key={u?._id}
                     className="border-b border-black/15 hover:bg-gray-50"
                   >
                     <td className="px-6 py-4">
