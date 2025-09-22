@@ -65,7 +65,7 @@ const ExploreTrips = () => {
         return <p className="flex justify-center items-center">No trips found</p>;
 
     return (
-        <div className="max-w-7xl mx-auto mt-12 px-4">
+        <div className="max-w-[1536px] mx-auto mt-10 px-4">
             {/* Header */}
             <div className="text-center">
                 <h1 className="text-4xl font-bold">Explore Trips</h1>
@@ -78,11 +78,11 @@ const ExploreTrips = () => {
             <p className="text-gray-600 mt-6">{publicTrips?.length} trips found</p>
 
             {/* Trips Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 ">
                 {publicTrips.map((trip) => (
                     <div
                         key={trip?._id}
-                        className="bg-white rounded-xl shadow-md p-4 items-center"
+                        className="bg-white rounded-xl border border-black/15 shadow-md p-4 items-center"
                     >
                         {/* Image */}
                         <div className="relative">
@@ -128,17 +128,22 @@ const ExploreTrips = () => {
                                 Budget <span>${trip?.budget}</span>
                             </p>
                             <div className="w-full flex gap-3 mt-2.5">
-                                <Link to={`/details/${trip?._id}`}>
-                                    <button className="flex-1 btn bg-cyan-600 hover:bg-cyan-800 text-white font-bold rounded-2xl">
+                                {/* First button */}
+                                <Link to={`/publicviewdetails/${trip?._id}`} className="flex-1">
+                                    <button className="w-full btn bg-cyan-600 hover:bg-cyan-800 text-white font-bold rounded-2xl">
                                         View Details
                                     </button>
                                 </Link>
-                                <button
-                                    className="flex-1 btn bg-black text-white font-bold rounded-2xl hover:bg-gray-800"
-                                    onClick={() => handleRequest(trip)}
-                                >
-                                    Request to Join
-                                </button>
+
+                                {/* Second button */}
+                                <div className="flex-1">
+                                    <button
+                                        className="w-full btn bg-black text-white font-bold rounded-2xl hover:bg-gray-800"
+                                        onClick={() => handleRequest(trip)}
+                                    >
+                                        Request to Join
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
