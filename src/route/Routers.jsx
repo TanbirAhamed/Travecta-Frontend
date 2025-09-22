@@ -19,6 +19,7 @@ import Photos from '../pages/viewDetails/Photos';
 import AdminDashboard from '../layouts/dashboard/adminDashboard';
 import AllTrips from '../pages/dashboard/adminDashboard/AllTrips';
 import AllUsers from '../pages/dashboard/adminDashboard/AllUsers';
+import PublicViewDetails from '../pages/exploreTrips/PublicViewDetails';
 
 const Routers = () => {
   return (
@@ -32,7 +33,6 @@ const Routers = () => {
           <Route path='allusers' element={<AllUsers />} />
         </Route>
 
-
         <Route path='/userdashboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
           <Route index element={<BudgetExpenses />} />
           <Route path='mytrips' element={<MyTrips />} />
@@ -41,6 +41,7 @@ const Routers = () => {
         </Route>
         <Route path='createtrip' element={<PrivateRoute><CreateTrips /></PrivateRoute>} />
         <Route path='exploretrips' element={<ExploreTrips />} />
+        <Route path='/publicviewdetails/:id' element={<PublicViewDetails />} />
         <Route
           path='/details/:id' element={<ViewDetails />}
         >

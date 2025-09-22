@@ -3,40 +3,83 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
 import { Link } from "react-router";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { Spiral } from "ldrs/react";
+import "ldrs/react/Spiral.css";
+import { useContext } from "react";
+import { AuthContext } from "../../provider/AuthProvider";
+import Swal from "sweetalert2";
 
 const FeaturedTrips = () => {
   const axiosPublic = useAxiosPublic();
-  const { data: tripsData = [], isLoading: loading } = useQuery({
-    queryKey: ['trips'],
-    queryFn: async () => {
-      const res = await axiosPublic.get(`/trips`);
-      return res.data
-    }
-  })
-  const publicTrips = tripsData.filter(trip => trip.visibility.toLowerCase() === "public");
+  const axiosSecure = useAxiosSecure();
+  const { user } = useContext(AuthContext);
 
-  if (loading) return <div className="flex justify-center items-center">
-    <Spiral
-      size="40"
-      speed="0.9"
-      color="black"
-    />
-  </div>
+  // Fetch trips
+  const { data: tripsData = [], isLoading: loading } = useQuery({
+    queryKey: ["trips"],
+    queryFn: async () => {
+      const res = await axiosPublic.get("/trips");
+      return res.data;
+    },
+  });
+
+  const publicTrips = tripsData.filter(
+    (trip) => trip?.visibility?.toLowerCase() === "public"
+  );
+
+  // Handle request to join
+  const handleRequest = async (trip) => {
+    if (!user) {
+      Swal.fire("Login Required", "Please log in to request to join.", "warning");
+      return;
+    }
+
+    try {
+      const payload = {
+        tripId: trip?._id,
+        userId: user?._id,
+        userEmail: user?.email,
+        userName: user?.name,
+      };
+
+      const res = await axiosSecure.post("/joinRequests", payload);
+
+      if (res.data?.insertedId || res.data?.acknowledged) {
+        Swal.fire("Request Sent!", "Your join request is pending approval.", "success");
+      } else {
+        Swal.fire("Notice", "You may have already requested to join this trip.", "info");
+      }
+    } catch (error) {
+      Swal.fire("Error!", "Failed to send join request.", "error");
+    }
+  };
+
+  if (loading)
+    return (
+      <div className="flex justify-center items-center">
+        <Spiral size="40" speed="0.9" color="black" />
+      </div>
+    );
+
   if (!publicTrips.length) return <p>No public trips found</p>;
 
   return (
-    <div className="justify-items-center items-center mt-14 max-w-7xl mx-auto">
+    <div className="justify-items-center items-center mt-14 max-w-[1536px] mx-auto px-4">
       <div className="text-center">
         <h1 className="text-5xl font-bold">Featured Trips</h1>
         <p className="mt-3">
           Join these amazing adventures or get inspired to create your own
         </p>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
         {publicTrips.slice(0, 3).map((trip) => (
-          <div key={trip._id} className="bg-white rounded-xl shadow-md p-4 items-center">
+          <div
+            key={trip._id}
+            className="bg-white border border-black/15 rounded-xl shadow-md p-4 items-center"
+          >
             {/* Image with badges */}
             <div className="relative">
               <img
@@ -57,11 +100,12 @@ const FeaturedTrips = () => {
                 </div>
               )}
             </div>
+
             <div className="card-body p-0 mt-4">
               <h2 className="card-title font-bold">
                 {trip.tripName}
                 <div className="badge badge-primary">
-                  {trip.participants}/{trip.participants}
+                  {Array.isArray(trip.participants) ? trip.participants.length : 0}
                 </div>
               </h2>
               <p className="mt-1">{trip.description}</p>
@@ -75,25 +119,39 @@ const FeaturedTrips = () => {
               </p>
               <p className="flex items-center gap-2 mt-1">
                 <FiUsers className="text-amber-600 font-extrabold text-xl" />
-                {trip.participants} travelers joined
+                {Array.isArray(trip.participants) ? trip.participants.length : 0} travelers joined
               </p>
               <p className="flex justify-between items-center gap-2 mt-1">
                 Budget <span>${trip.budget}</span>
               </p>
               <div className="w-full flex gap-3 mt-2.5">
-                <button className="flex-1 btn bg-cyan-600 hover:bg-cyan-800 text-white border-gray-300  font-bold rounded-2xl">
-                  View Details
-                </button>
-                <button className="flex-1 btn bg-black text-white font-bold rounded-2xl hover:bg-gray-800">
-                  Request to Join
-                </button>
+                {/* View Details */}
+                <Link to={`/publicviewdetails/${trip._id}`} className="flex-1">
+                  <button className="w-full btn bg-cyan-600 hover:bg-cyan-800 text-white font-bold rounded-2xl">
+                    View Details
+                  </button>
+                </Link>
+
+                {/* Request to Join */}
+                <div className="flex-1">
+                  <button
+                    className="w-full btn bg-black text-white font-bold rounded-2xl hover:bg-gray-800"
+                    onClick={() => handleRequest(trip)}
+                  >
+                    Request to Join
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
+
       <div className="text-center mt-8 justify-items-center">
-        <Link to='/exploretrips' className="btn bg-white text-black/95 font-bold rounded-xl px-8 hover:bg-amber-500 hover:text-white">
+        <Link
+          to="/exploretrips"
+          className="btn bg-white text-black/95 font-bold rounded-xl px-8 hover:bg-amber-500 hover:text-white"
+        >
           View All Trips
         </Link>
       </div>

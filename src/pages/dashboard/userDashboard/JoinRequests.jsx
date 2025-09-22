@@ -35,7 +35,7 @@ const JoinRequests = ({ tripId }) => {
         return <p className="text-center text-gray-500 mt-4">No join requests</p>;
 
     return (
-        <div className="space-y-4 p-6">
+        <div className="space-y-4 mt-7">
             {requests?.map((req) => (
                 <div
                     key={req?._id}
