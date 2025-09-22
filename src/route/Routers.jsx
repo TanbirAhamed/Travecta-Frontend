@@ -34,8 +34,8 @@ const Routers = () => {
 
 
         <Route path='/userdashboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
-          <Route path='mytrips' element={<MyTrips />} />
           <Route index element={<BudgetExpenses />} />
+          <Route path='mytrips' element={<MyTrips />} />
           <Route path='joinedtrips' element={<JoinedTrips />} />
           <Route path='joinrequests' element={<JoinRequests />} />
         </Route>
