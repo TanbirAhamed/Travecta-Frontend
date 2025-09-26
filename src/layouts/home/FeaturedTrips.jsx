@@ -74,8 +74,8 @@ const FeaturedTrips = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
-        {publicTrips.slice(0, 3).map((trip) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+        {publicTrips.slice(0, 4).map((trip) => (
           <div
             key={trip._id}
             className="bg-white border border-black/15 rounded-xl shadow-md p-4 items-center"
@@ -85,7 +85,7 @@ const FeaturedTrips = () => {
               <img
                 src={trip.tripImage}
                 alt={trip.tripName}
-                className="rounded-xl"
+                className="rounded-xl rounded-b-[160px]"
               />
               <div className="absolute top-2 left-2">
                 <span className="bg-white text-black text-xs font-medium px-2 py-1 rounded-md shadow">
