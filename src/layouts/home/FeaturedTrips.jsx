@@ -78,14 +78,14 @@ const FeaturedTrips = () => {
         {publicTrips.slice(0, 4).map((trip) => (
           <div
             key={trip._id}
-            className="bg-white border border-black/15 rounded-xl shadow-md p-4 items-center"
+            className="bg-white border border-black/15 rounded-xl shadow-md items-center"
           >
             {/* Image with badges */}
             <div className="relative">
               <img
                 src={trip.tripImage}
                 alt={trip.tripName}
-                className="rounded-xl rounded-b-[160px]"
+                className="h-60 object-cover rounded-xl rounded-b-[115px]"
               />
               <div className="absolute top-2 left-2">
                 <span className="bg-white text-black text-xs font-medium px-2 py-1 rounded-md shadow">
@@ -101,7 +101,7 @@ const FeaturedTrips = () => {
               )}
             </div>
 
-            <div className="card-body p-0 mt-4">
+            <div className="card-body p-5">
               <h2 className="card-title font-bold">
                 {trip.tripName}
                 <div className="badge badge-primary">

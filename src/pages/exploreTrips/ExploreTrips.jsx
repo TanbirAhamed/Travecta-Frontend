@@ -89,7 +89,7 @@ const ExploreTrips = () => {
                             <img
                                 src={trip?.tripImage}
                                 alt={trip?.tripName}
-                                className="rounded-xl rounded-br-[160px]"
+                                className="h-60 rounded-xl rounded-br-[120px]"
                             />
                             <div className="absolute top-2 left-2">
                                 <span className="bg-white text-black text-xs font-medium px-2 py-1 rounded-md shadow">
