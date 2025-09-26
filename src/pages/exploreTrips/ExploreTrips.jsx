@@ -78,7 +78,7 @@ const ExploreTrips = () => {
             <p className="text-gray-600 mt-6">{publicTrips?.length} trips found</p>
 
             {/* Trips Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 ">
                 {publicTrips.map((trip) => (
                     <div
                         key={trip?._id}
@@ -89,7 +89,7 @@ const ExploreTrips = () => {
                             <img
                                 src={trip?.tripImage}
                                 alt={trip?.tripName}
-                                className="rounded-xl"
+                                className="rounded-xl rounded-br-[160px]"
                             />
                             <div className="absolute top-2 left-2">
                                 <span className="bg-white text-black text-xs font-medium px-2 py-1 rounded-md shadow">
