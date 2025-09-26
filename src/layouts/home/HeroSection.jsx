@@ -1,3 +1,4 @@
+import { Link } from "react-router"
 
 
 const HeroSection = () => {
@@ -11,7 +12,7 @@ const HeroSection = () => {
                         Connect with fellow travelers, discover incredible destinations, and create unforgettable memories. Join group trips or organize your own adventures with Travecta.
                     </p>
                     <div className="flex gap-3 items-center">
-                        <button className="btn bg-cyan-600 rounded-2xl text-white text-xl px-5">Explore Trips</button>
+                        <Link to='exploretrips' className="btn bg-cyan-600 rounded-2xl text-white text-xl px-5">Explore Trips</Link>
                         <button className="btn bg-base-200 hover:bg-orange-500 hover:text-white rounded-2xl text-xl px-5">Start Planning</button>
                     </div>
                 </div>
