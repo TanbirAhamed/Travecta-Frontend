@@ -6,15 +6,14 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from '@tanstack/react-query';
 import { Spiral } from 'ldrs/react';
 import 'ldrs/react/Spiral.css';
+import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router";
-import { useContext } from "react";
-import { AuthContext } from "../../provider/AuthProvider";
 import Swal from "sweetalert2";
 
 const ExploreTrips = () => {
     const axiosPublic = useAxiosPublic();
     const axiosSecure = useAxiosSecure();
-    const { user } = useContext(AuthContext);
+    const { user } = useAuth();
 
     // Fetch trips
     const { data: tripsData = [], isLoading: loading } = useQuery({
@@ -36,8 +35,11 @@ const ExploreTrips = () => {
             const payload = {
                 tripId: trip?._id,
                 userId: user?._id,
+                tripCreatedBy: trip?.createdBy,
+                tripName: trip?.tripName,
                 userEmail: user?.email,
-                userName: user?.name,
+                userName: user?.displayName,
+                userImage: user?.photoURL
             };
 
             const res = await axiosSecure.post("/joinRequests", payload);
