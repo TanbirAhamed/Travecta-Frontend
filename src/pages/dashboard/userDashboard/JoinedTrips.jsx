@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { IoLocationOutline } from "react-icons/io5";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { FiUsers } from "react-icons/fi";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
@@ -13,7 +10,7 @@ const JoinedTrips = () => {
     const fetchJoinedTrips = async () => {
         try {
             const res = await axiosSecure.get("/joinRequests", {
-                params: { email: user?.email },
+                params: { joinedEmail: user?.email },
             });
             setTrips(res.data ?? []);
         } catch (error) {
@@ -29,57 +26,35 @@ const JoinedTrips = () => {
         return <p className="text-center text-gray-500 mt-4">No trips yet</p>;
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5 mt-10">
-            {trips?.map((trip) => {
-                const isAccepted = trip?.status === "accepted";
-
-                return (
-                    <div
-                        key={trip?._id}
-                        className={`bg-white rounded-xl shadow-md p-4 items-center ${!isAccepted ? "opacity-60 cursor-not-allowed" : ""
-                            }`}
+        <table className="table-auto w-full border-collapse border border-gray-300 mt-5">
+            <thead>
+                <tr className="bg-gray-100">
+                    <th className="border px-4 py-2">Trip Name</th>
+                    <th className="border px-4 py-2">Destination</th>
+                    <th className="border px-4 py-2">Start - End Date</th>
+                    <th className="border px-4 py-2">Participants</th>
+                    <th className="border px-4 py-2">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {trips.map((trip) => (
+                    <tr
+                        key={trip._id}
+                        className={`text-center ${trip.status !== "accepted" ? "opacity-60" : ""}`}
                     >
-                        <figure className="rounded-xl">
-                            <img
-                                src={trip?.tripImage ?? "https://i.ibb.co/fYRQTwTc/nepal.jpg"}
-                                alt={trip?.tripName}
-                                className="rounded-xl"
-                            />
-                        </figure>
-                        <div className="items-center mt-3.5">
-                            <h2 className="font-bold flex justify-between">
-                                {trip?.tripName}
-                                <div className={`badge ${isAccepted ? "badge-primary" : "badge-warning"}`}>
-                                    {isAccepted ? "Joined" : "Pending"}
-                                </div>
-                            </h2>
-                            <p className="mt-2">{trip?.description}</p>
-                            <p className="flex items-center gap-2 mt-1">
-                                <IoLocationOutline className="text-cyan-600 text-xl" />
-                                {trip?.destination}
-                            </p>
-                            <p className="flex items-center gap-2 mt-1">
-                                <FaRegCalendarAlt className="text-green-700 text-xl" />
-                                {trip?.startDate} - {trip?.endDate}
-                            </p>
-                            <p className="flex items-center gap-2 mt-1">
-                                <FiUsers className="text-amber-600 text-xl" />
-                                {trip?.participants ?? 0} travelers joined
-                            </p>
-                            <button
-                                className={`btn w-full text-black font-semibold rounded-xl mt-3 ${isAccepted
-                                        ? "bg-white hover:bg-orange-500 hover:text-white"
-                                        : "bg-gray-200 cursor-not-allowed"
-                                    }`}
-                                disabled={!isAccepted}
-                            >
-                                View Trip
-                            </button>
-                        </div>
-                    </div>
-                );
-            })}
-        </div>
+                        <td className="border px-4 py-2">{trip.tripName}</td>
+                        <td className="border px-4 py-2">{trip.destination ?? "-"}</td>
+                        <td className="border px-4 py-2">
+                            {trip.startDate ?? "-"} - {trip.endDate ?? "-"}
+                        </td>
+                        <td className="border px-4 py-2">{trip.participants ?? 0}</td>
+                        <td className="border px-4 py-2 font-semibold">
+                            {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
     );
 };
 

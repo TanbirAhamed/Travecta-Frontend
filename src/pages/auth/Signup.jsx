@@ -42,6 +42,7 @@ const Signup = () => {
                         const userInfo = {
                             name: name,
                             email: email,
+                            image: photo,
                             role: 'user'
                         };
 
