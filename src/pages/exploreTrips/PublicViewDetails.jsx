@@ -100,7 +100,8 @@ const PublicViewDetails = () => {
                     {/* About Trip */}
                     <div className="mt-6 border-t pt-4">
                         <h2 className="font-semibold">About this trip</h2>
-                        <p className="text-gray-600 mt-2">{trip?.about}</p>
+                        <p className="text-gray-600 mt-2">{trip?.description
+}</p>
                     </div>
                 </div>
             </div>
