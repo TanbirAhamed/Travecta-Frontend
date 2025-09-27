@@ -1,14 +1,12 @@
-import { IoLocationOutline } from "react-icons/io5";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { FiUsers } from "react-icons/fi";
+import { Spiral } from 'ldrs/react';
+import 'ldrs/react/Spiral.css';
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from '@tanstack/react-query';
-import { Spiral } from 'ldrs/react';
-import 'ldrs/react/Spiral.css';
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router";
 import Swal from "sweetalert2";
+import TripCard from '../featuredExploreTripsCard/TripCard';
+
 
 const ExploreTrips = () => {
     const axiosPublic = useAxiosPublic();
@@ -82,73 +80,11 @@ const ExploreTrips = () => {
             {/* Trips Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 ">
                 {publicTrips.map((trip) => (
-                    <div
-                        key={trip?._id}
-                        className="bg-white rounded-xl border border-black/15 shadow-md p-4 items-center"
-                    >
-                        {/* Image */}
-                        <div className="relative">
-                            <img
-                                src={trip?.tripImage}
-                                alt={trip?.tripName}
-                                className="h-60 rounded-xl rounded-br-[120px]"
-                            />
-                            <div className="absolute top-2 left-2">
-                                <span className="bg-white text-black text-xs font-medium px-2 py-1 rounded-md shadow">
-                                    Public
-                                </span>
-                            </div>
-                            {trip?.category && (
-                                <div className="absolute top-2 right-2">
-                                    <span className="bg-white text-black text-xs font-medium px-2 py-1 rounded-md shadow">
-                                        {trip?.category}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Details */}
-                        <div className="card-body p-0 mt-4">
-                            <h2 className="card-title font-bold">
-                                {trip?.tripName}
-                                <div className="badge badge-primary">{trip?.participants}</div>
-                            </h2>
-                            <p className="mt-1">{trip?.description}</p>
-                            <p className="flex items-center gap-2 mt-1">
-                                <IoLocationOutline className="text-cyan-600 text-xl" />
-                                {trip?.destination}
-                            </p>
-                            <p className="flex items-center gap-2 mt-1">
-                                <FaRegCalendarAlt className="text-green-700 text-xl" />
-                                {trip?.startDate} - {trip?.endDate}
-                            </p>
-                            <p className="flex items-center gap-2 mt-1">
-                                <FiUsers className="text-amber-600 text-xl" />
-                                {trip?.participants} travelers joined
-                            </p>
-                            <p className="flex justify-between items-center gap-2 mt-1">
-                                Budget <span>${trip?.budget}</span>
-                            </p>
-                            <div className="w-full flex gap-3 mt-2.5">
-                                {/* First button */}
-                                <Link to={`/publicviewdetails/${trip?._id}`} className="flex-1">
-                                    <button className="w-full btn bg-cyan-600 hover:bg-cyan-800 text-white font-bold rounded-2xl">
-                                        View Details
-                                    </button>
-                                </Link>
-
-                                {/* Second button */}
-                                <div className="flex-1">
-                                    <button
-                                        className="w-full btn bg-black text-white font-bold rounded-2xl hover:bg-gray-800"
-                                        onClick={() => handleRequest(trip)}
-                                    >
-                                        Request to Join
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <TripCard 
+                      key={trip?._id} 
+                      trip={trip} 
+                      handleRequest={handleRequest} 
+                    />
                 ))}
             </div>
         </div>

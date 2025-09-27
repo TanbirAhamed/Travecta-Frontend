@@ -1,61 +1,96 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { FiUsers } from "react-icons/fi";
 
 const JoinedTrips = () => {
-    const { user } = useAuth();
-    const axiosSecure = useAxiosSecure();
-    const [trips, setTrips] = useState([]);
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const [trips, setTrips] = useState([]);
 
-    const fetchJoinedTrips = async () => {
-        try {
-            const res = await axiosSecure.get("/joinRequests", {
-                params: { joinedEmail: user?.email },
-            });
-            setTrips(res.data ?? []);
-        } catch (error) {
-            console.error("Failed to fetch trips", error);
-        }
-    };
+  const fetchJoinedTrips = async () => {
+    try {
+      const res = await axiosSecure.get("/joinRequests", {
+        params: { joinedEmail: user?.email },
+      });
+      setTrips(res.data ?? []);
+    } catch (error) {
+      console.error("Failed to fetch trips", error);
+    }
+  };
 
-    useEffect(() => {
-        if (user?.email) fetchJoinedTrips();
-    }, [user?.email]);
+  useEffect(() => {
+    if (user?.email) fetchJoinedTrips();
+  }, [user?.email]);
 
-    if (!trips?.length)
-        return <p className="text-center text-gray-500 mt-4">No trips yet</p>;
+  if (!trips?.length)
+    return <p className="text-center text-gray-500 mt-4">No trips yet</p>;
 
-    return (
-        <table className="table-auto w-full border-collapse border border-gray-300 mt-5">
-            <thead>
-                <tr className="bg-gray-100">
-                    <th className="border px-4 py-2">Trip Name</th>
-                    <th className="border px-4 py-2">Destination</th>
-                    <th className="border px-4 py-2">Start - End Date</th>
-                    <th className="border px-4 py-2">Participants</th>
-                    <th className="border px-4 py-2">Status</th>
-                </tr>
+  return (
+    <div className="mt-7">
+      <div className="bg-white border border-black/15 rounded-xl shadow">
+        <div className="px-6 py-4 font-semibold text-gray-700">
+          Joined Trips ({trips?.length || 0})
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="text-gray-500 border-b text-center border-black/15">
+              <tr>
+                <th className="px-6 py-3">Trip</th>
+                <th className="px-6 py-3">Destination</th>
+                <th className="px-6 py-3">Dates</th>
+                <th className="px-6 py-3">Participants</th>
+                <th className="px-6 py-3">Status</th>
+              </tr>
             </thead>
             <tbody>
-                {trips.map((trip) => (
-                    <tr
-                        key={trip._id}
-                        className={`text-center ${trip.status !== "accepted" ? "opacity-60" : ""}`}
+              {trips.map((trip) => (
+                <tr
+                  key={trip._id}
+                  className={`border-b border-black/15 hover:bg-gray-50 text-center ${
+                    trip.status !== "accepted" ? "opacity-60" : ""
+                  }`}
+                >
+                  {/* Trip info */}
+                  <td className="px-6 text-left py-4 font-medium">{trip.tripName}</td>
+
+                  {/* Destination */}
+                  <td className="px-6 py-4">{trip.destination ?? "-"}</td>
+
+                  {/* Dates */}
+                  <td className="px-6 py-4">
+                    {trip.startDate ?? "-"} - {trip.endDate ?? "-"}
+                  </td>
+
+                  {/* Participants */}
+                  <td className="px-6 py-4 flex items-center justify-center gap-1">
+                    <FiUsers size={16} />
+                    {trip.participants ?? 0}
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-2 py-1 rounded-md text-xs font-medium ${
+                        trip.status === "accepted"
+                          ? "bg-green-100 text-green-700"
+                          : trip.status === "pending"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
                     >
-                        <td className="border px-4 py-2">{trip.tripName}</td>
-                        <td className="border px-4 py-2">{trip.destination ?? "-"}</td>
-                        <td className="border px-4 py-2">
-                            {trip.startDate ?? "-"} - {trip.endDate ?? "-"}
-                        </td>
-                        <td className="border px-4 py-2">{trip.participants ?? 0}</td>
-                        <td className="border px-4 py-2 font-semibold">
-                            {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
-                        </td>
-                    </tr>
-                ))}
+                      {trip.status.charAt(0).toUpperCase() +
+                        trip.status.slice(1)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
             </tbody>
-        </table>
-    );
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default JoinedTrips;

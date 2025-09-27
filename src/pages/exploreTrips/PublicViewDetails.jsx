@@ -33,9 +33,9 @@ const PublicViewDetails = () => {
             : "";
 
     return (
-        <div className="max-w-[1536px] mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="max-w-[1536px] mx-auto px-4 py-8 gap-6">
             {/* Left Content */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span- space-y-6">
                 {/* Trip Image & Header */}
                 <div className="bg-white rounded-xl shadow p-4 border border-black/15">
                     <div className="relative">
@@ -106,34 +106,21 @@ const PublicViewDetails = () => {
             </div>
 
             {/* Right Sidebar */}
-            <div className="space-y-6">
+            <div className="grid grid-cols-2 mt-6 gap-6">
                 {/* Trip Creator */}
                 <div className="bg-white rounded-xl shadow p-4 border border-black/15">
                     <h2 className="font-semibold mb-3">Trip Creator</h2>
                     <div className="flex items-center gap-3">
                         <img
                             src={trip?.creator?.avatar || "https://via.placeholder.com/50"}
-                            alt={trip?.creator?.name}
+                            alt={trip?.createdBy}
                             className="w-12 h-12 rounded-full"
                         />
                         <div>
-                            <p className="font-medium">{trip?.creator?.name}</p>
+                            <p className="font-medium">{trip?.createdBy}</p>
                             <p className="text-sm text-gray-500">Trip organizer</p>
                         </div>
                     </div>
-                </div>
-
-                {/* Edit / Chat Section */}
-                <div className="bg-white rounded-xl shadow p-4 text-center border border-black/15">
-                    <span className="inline-block bg-black text-white text-xs px-3 py-1 rounded-full mb-3">
-                        You're part of this trip!
-                    </span>
-                    <p className="text-sm text-gray-600 mb-3">
-                        Use the chat to coordinate with other participants.
-                    </p>
-                    <button className="w-full btn bg-gray-200 hover:bg-gray-300 rounded-lg font-medium">
-                        Edit Trip
-                    </button>
                 </div>
 
                 {/* Participants */}
