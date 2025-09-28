@@ -65,8 +65,8 @@ function Home() {
 
         {/* Other Sections */}
         <MiddleSection />
-        <FeaturedTrips />
       </div>
+      <FeaturedTrips />
     </div>
   )
 }
