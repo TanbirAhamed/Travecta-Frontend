@@ -65,7 +65,7 @@ const FeaturedTrips = () => {
   if (!publicTrips.length) return <p>No public trips found</p>;
 
   return (
-    <div className="justify-items-center items-center mt-14 max-w-[1536px] mx-auto px-4">
+    <div className="max-w-[1536px] mx-auto mt-10 px-4">
       <div className="text-center">
         <h1 className="text-5xl font-bold">Featured Trips</h1>
         <p className="mt-3">
