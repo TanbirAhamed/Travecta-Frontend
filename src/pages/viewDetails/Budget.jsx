@@ -4,15 +4,19 @@ import { useForm } from "react-hook-form";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useAuth from "../../hooks/useAuth";
 
 const Budget = () => {
   const { trip } = useOutletContext();
+  const { user } = useAuth(); 
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const totalBudget = trip?.budget || 0;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm();
+
+  const isCreator = user?.email === trip?.createdBy; 
 
   // Fetch expenses
   const { data: expenses = [], isLoading } = useQuery({
@@ -31,14 +35,11 @@ const Budget = () => {
     ? ((totalSpent / totalBudget) * 100).toFixed(1)
     : 0;
 
-
   // Add expense mutation
   const mutation = useMutation({
-    mutationFn: async (expenseData) => {
-      return axiosSecure.post("/expenses", expenseData);
-    },
+    mutationFn: async (expenseData) => axiosSecure.post("/expenses", expenseData),
     onSuccess: () => {
-      queryClient.invalidateQueries(["expenses", trip?._id]); // refetch
+      queryClient.invalidateQueries(["expenses", trip?._id]);
       Swal.fire({
         icon: "success",
         title: "Added!",
@@ -101,13 +102,15 @@ const Budget = () => {
             ))
           )}
 
-          {/* Add Expense Button */}
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="w-full border rounded-lg py-2 text-gray-900 flex border-black/15 items-center justify-center gap-2 hover:bg-gray-50"
-          >
-            <span className="text-xl">+</span> Add Expense
-          </button>
+          {/* Add Expense Button - only visible to creator */}
+          {isCreator && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-full border rounded-lg py-2 text-gray-900 flex border-black/15 items-center justify-center gap-2 hover:bg-gray-50"
+            >
+              <span className="text-xl">+</span> Add Expense
+            </button>
+          )}
         </div>
       </div>
 
@@ -135,8 +138,8 @@ const Budget = () => {
         <p className="text-sm text-gray-500">{percentageUsed}% of budget used</p>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
+      {/* Modal - only visible to creator */}
+      {isCreator && isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-5 relative">
             <button

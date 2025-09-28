@@ -1,20 +1,13 @@
 import { Link } from "react-router";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { Spiral } from "ldrs/react";
 import "ldrs/react/Spiral.css";
-import { useContext } from "react";
-import { AuthContext } from "../../provider/AuthProvider";
-import Swal from "sweetalert2";
 import TripCard from "../../pages/featuredExploreTripsCard/TripCard";
 
 
 const FeaturedTrips = () => {
   const axiosPublic = useAxiosPublic();
-  const axiosSecure = useAxiosSecure();
-  const { user } = useContext(AuthContext);
-
   // Fetch trips
   const { data: tripsData = [], isLoading: loading } = useQuery({
     queryKey: ["trips"],
@@ -27,33 +20,6 @@ const FeaturedTrips = () => {
   const publicTrips = tripsData.filter(
     (trip) => trip?.visibility?.toLowerCase() === "public"
   );
-
-  // Handle request to join
-  const handleRequest = async (trip) => {
-    if (!user) {
-      Swal.fire("Login Required", "Please log in to request to join.", "warning");
-      return;
-    }
-
-    try {
-      const payload = {
-        tripId: trip?._id,
-        userId: user?._id,
-        userEmail: user?.email,
-        userName: user?.name,
-      };
-
-      const res = await axiosSecure.post("/joinRequests", payload);
-
-      if (res.data?.insertedId || res.data?.acknowledged) {
-        Swal.fire("Request Sent!", "Your join request is pending approval.", "success");
-      } else {
-        Swal.fire("Notice", "You may have already requested to join this trip.", "info");
-      }
-    } catch (error) {
-      Swal.fire("Error!", "Failed to send join request.", "error");
-    }
-  };
 
   if (loading)
     return (
@@ -73,12 +39,11 @@ const FeaturedTrips = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
         {publicTrips.slice(0, 4).map((trip) => (
           <TripCard
             key={trip._id}
             trip={trip}
-            handleRequest={handleRequest}
           />
         ))}
       </div>

@@ -1,21 +1,55 @@
 import { FaUsers, FaCalendarAlt, FaDollarSign, FaMapMarkerAlt } from "react-icons/fa";
 import { useParams } from "react-router"; 
 import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import useAuth from "../../hooks/useAuth";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
-const fetchTrip = async (id) => {
-  const res = await fetch(`http://localhost:5000/trips/${id}`);
-  if (!res.ok) throw new Error("Failed to fetch trip");
-  return res.json();
-};
 
-const PublicViewDetails = ({ handleRequest, showRequestButton = true }) => {
+const PublicViewDetails = () => {
   const { id } = useParams(); 
+  const {user} = useAuth();
+  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
 
   const { data: trip, isLoading, isError } = useQuery({
     queryKey: ["trip", id],
-    queryFn: () => fetchTrip(id),
+    queryFn: async() => {
+        const res = await axiosPublic.get(`/trips/${id}`);
+        return res.data;
+    },
     enabled: !!id, 
   });
+
+  const handleRequest = async (trip) => {
+        if (!user) {
+            Swal.fire("Login Required", "Please log in to request to join.", "warning");
+            return;
+        }
+
+        try {
+            const payload = {
+                tripId: trip?._id,
+                userId: user?._id,
+                tripCreatedBy: trip?.createdBy,
+                tripName: trip?.tripName,
+                userEmail: user?.email,
+                userName: user?.displayName,
+                userImage: user?.photoURL
+            };
+
+            const res = await axiosSecure.post("/joinRequests", payload);
+
+            if (res.data?.insertedId || res.data?.acknowledged) {
+                Swal.fire("Request Sent!", "Your join request is pending approval.", "success");
+            } else {
+                Swal.fire("Notice", "You may have already requested to join this trip.", "info");
+            }
+        } catch (error) {
+            Swal.fire("Error!", "Failed to send join request.", "error");
+        }
+    };
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p className="text-red-500">Error loading trip.</p>;
@@ -66,14 +100,14 @@ const PublicViewDetails = ({ handleRequest, showRequestButton = true }) => {
           <div className="mt-4">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold">{trip.tripName}</h1>
-              {showRequestButton && (
+
                 <button
                   onClick={() => handleRequest?.(trip)}
                   className="bg-blue-600 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm md:text-base px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow transition duration-200"
                 >
                   Request to Join
                 </button>
-              )}
+
             </div>
 
             <p className="flex items-center text-gray-600 mt-1">
@@ -119,7 +153,7 @@ const PublicViewDetails = ({ handleRequest, showRequestButton = true }) => {
       </div>
 
       {/* Right Sidebar */}
-      <div className="grid grid-cols-2 mt-6 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-6">
         {/* Trip Creator */}
         <div className="bg-white rounded-xl shadow p-4 border border-black/15">
           <h2 className="font-semibold mb-3">Trip Creator</h2>

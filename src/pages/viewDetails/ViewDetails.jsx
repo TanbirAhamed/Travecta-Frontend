@@ -6,9 +6,11 @@ import { FiEdit } from "react-icons/fi";
 import Tabs from "./Tabs";
 import { Outlet, useParams } from "react-router";
 import { useEffect, useState } from "react";
+import useAuth from "../../hooks/useAuth"; 
 
 const ViewDetails = () => {
   const { id } = useParams();
+  const { user } = useAuth(); 
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,14 +25,18 @@ const ViewDetails = () => {
 
   if (loading) return <p>Loading...</p>;
   if (!trip) return <p className="text-gray-600">Trip not found.</p>;
+
+  // Only trip creator can edit
+  const isCreator = user?.email === trip?.createdBy;
+
   // Format dates (optional chaining ensures no crash)
   const formatDate = (dateStr) => {
     return dateStr
       ? new Date(dateStr).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      })
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
       : "";
   };
 
@@ -78,9 +84,11 @@ const ViewDetails = () => {
 
             {/* Buttons */}
             <div className="flex gap-2">
-              <button className="flex items-center gap-2 px-3 py-2 bg-black text-white rounded-lg text-sm hover:bg-gray-800">
-                <FiEdit /> Edit Trip
-              </button>
+              {isCreator && (
+                <button className="flex items-center gap-2 px-3 py-2 bg-black text-white rounded-lg text-sm hover:bg-gray-800">
+                  <FiEdit /> Edit Trip
+                </button>
+              )}
             </div>
           </div>
         </div>
