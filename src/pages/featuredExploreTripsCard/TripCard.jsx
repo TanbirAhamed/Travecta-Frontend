@@ -3,7 +3,7 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import { FiUsers } from "react-icons/fi";
 import { Link } from "react-router";
 
-const TripCard = ({ trip, handleRequest, showRequestButton = true }) => {
+const TripCard = ({ trip }) => {
   return (
     <div className="group relative rounded-xl shadow-xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
       {/* Gradient Background */}
@@ -47,11 +47,6 @@ const TripCard = ({ trip, handleRequest, showRequestButton = true }) => {
               0 Joined
             </span>
           </h2>
-
-          {/* <p className="mt-2 text-gray-800 text-xs sm:text-sm md:text-base line-clamp-2 sm:line-clamp-3">
-            {trip.description}
-          </p> */}
-
           <div className="mt-3 space-y-1.5 sm:space-y-2 text-gray-800 text-xs sm:text-sm md:text-base">
             <p className="flex items-center gap-1.5 sm:gap-2">
               <IoLocationOutline className="text-cyan-600 text-base sm:text-lg md:text-xl" />
@@ -80,15 +75,6 @@ const TripCard = ({ trip, handleRequest, showRequestButton = true }) => {
                 View Details
               </button>
             </Link>
-
-            {/* {showRequestButton && (
-              <button
-                onClick={() => handleRequest(trip)}
-                className="flex-1 bg-blue-600 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm md:text-base px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow transition duration-200"
-              >
-                Request to Join
-              </button>
-            )} */}
           </div>
         </div>
       </div>

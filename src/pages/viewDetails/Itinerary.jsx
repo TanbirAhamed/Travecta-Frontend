@@ -5,9 +5,11 @@ import ActivityItem from "./ActivityItem";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useOutletContext } from "react-router";
+import useAuth from "../../hooks/useAuth"; 
 
 const Itinerary = () => {
     const { trip } = useOutletContext();
+    const { user } = useAuth(); 
     const axiosSecure = useAxiosSecure();
     const axiosPublic = useAxiosPublic();
     const queryClient = useQueryClient();
@@ -19,7 +21,8 @@ const Itinerary = () => {
         activities: [{ time: "", title: "" }],
     });
 
-    // Fetch itinerary
+    const isCreator = user?.email === trip?.createdBy;
+
     const { data: days = [], isLoading } = useQuery({
         queryKey: ["itinerary", trip?._id],
         queryFn: async () => {
@@ -42,7 +45,7 @@ const Itinerary = () => {
             });
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(["itinerary", trip._id]); // refetch
+            queryClient.invalidateQueries(["itinerary", trip._id]);
             Swal.fire({
                 icon: "success",
                 title: "Added!",
@@ -53,8 +56,7 @@ const Itinerary = () => {
             setNewDay({ title: "", date: "", activities: [{ time: "", title: "" }] });
             setIsModalOpen(false);
         },
-        onError: (err) => {
-            
+        onError: () => {
             Swal.fire({
                 icon: "error",
                 title: "Failed!",
@@ -91,7 +93,7 @@ const Itinerary = () => {
             return;
         }
 
-        const hasActivity = newDay.activities.some(act => act.title.trim() !== "");
+        const hasActivity = newDay.activities.some((act) => act.title.trim() !== "");
         if (!hasActivity) {
             Swal.fire({
                 icon: "error",
@@ -116,24 +118,31 @@ const Itinerary = () => {
                     </div>
                     <div className="space-y-3">
                         {day.activities.map((activity, idx) => (
-                            <ActivityItem key={idx} time={activity.time} title={activity.title} />
+                            <ActivityItem
+                                key={idx}
+                                time={activity.time}
+                                title={activity.title}
+                                isCreator={isCreator} 
+                            />
                         ))}
                     </div>
                 </div>
             ))}
 
-            {/* Add New Day Button */}
-            <div className="flex justify-center">
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-6 rounded-md hover:bg-gray-800 transition"
-                >
-                    <span className="text-xl">+</span> Add New Day
-                </button>
-            </div>
+            {/* ✅ Only creator can add new day */}
+            {isCreator && (
+                <div className="flex justify-center">
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-6 rounded-md hover:bg-gray-800 transition"
+                    >
+                        <span className="text-xl">+</span> Add New Day
+                    </button>
+                </div>
+            )}
 
-            {/* Modal */}
-            {isModalOpen && (
+            {/* ✅ Modal only for creator */}
+            {isModalOpen && isCreator && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
                     <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg">
                         <h2 className="text-lg font-bold mb-4">Add New Day</h2>
@@ -192,10 +201,16 @@ const Itinerary = () => {
                         </button>
 
                         <div className="flex justify-end gap-2">
-                            <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded bg-gray-200">
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="px-4 py-2 rounded bg-gray-200"
+                            >
                                 Cancel
                             </button>
-                            <button onClick={handleSubmit} className="px-4 py-2 rounded bg-black text-white">
+                            <button
+                                onClick={handleSubmit}
+                                className="px-4 py-2 rounded bg-black text-white"
+                            >
                                 Save Day
                             </button>
                         </div>

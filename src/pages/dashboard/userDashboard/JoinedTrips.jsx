@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { FiUsers } from "react-icons/fi";
@@ -23,6 +24,15 @@ const JoinedTrips = () => {
     if (user?.email) fetchJoinedTrips();
   }, [user?.email]);
 
+  const formatDate = (dateStr) =>
+    dateStr
+      ? new Date(dateStr).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : "-";
+
   if (!trips?.length)
     return <p className="text-center text-gray-500 mt-4">No trips yet</p>;
 
@@ -30,7 +40,7 @@ const JoinedTrips = () => {
     <div className="mt-7">
       <div className="bg-white border border-black/15 rounded-xl shadow">
         <div className="px-6 py-4 font-semibold text-gray-700">
-          Joined Trips ({trips?.length || 0})
+          Joined Trips ({trips.length})
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -41,6 +51,7 @@ const JoinedTrips = () => {
                 <th className="px-6 py-3">Dates</th>
                 <th className="px-6 py-3">Participants</th>
                 <th className="px-6 py-3">Status</th>
+                <th className="px-6 py-3">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -51,24 +62,15 @@ const JoinedTrips = () => {
                     trip.status !== "accepted" ? "opacity-60" : ""
                   }`}
                 >
-                  {/* Trip info */}
                   <td className="px-6 text-left py-4 font-medium">{trip.tripName}</td>
-
-                  {/* Destination */}
-                  <td className="px-6 py-4">{trip.destination ?? "-"}</td>
-
-                  {/* Dates */}
+                  <td className="px-6 py-4">{trip.destination || "-"}</td>
                   <td className="px-6 py-4">
-                    {trip.startDate ?? "-"} - {trip.endDate ?? "-"}
+                    {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
                   </td>
-
-                  {/* Participants */}
                   <td className="px-6 py-4 flex items-center justify-center gap-1">
                     <FiUsers size={16} />
                     {trip.participants ?? 0}
                   </td>
-
-                  {/* Status */}
                   <td className="px-6 py-4">
                     <span
                       className={`px-2 py-1 rounded-md text-xs font-medium ${
@@ -79,9 +81,20 @@ const JoinedTrips = () => {
                           : "bg-red-100 text-red-700"
                       }`}
                     >
-                      {trip.status.charAt(0).toUpperCase() +
-                        trip.status.slice(1)}
+                      {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
                     </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {trip.status === "accepted" ? (
+                      <Link
+                        to={`/details/${trip.tripId}`}
+                        className="btn w-full bg-cyan-600 hover:bg-cyan-800 text-white font-semibold rounded-xl text-xs sm:text-sm px-3 py-1 shadow"
+                      >
+                        View Details
+                      </Link>
+                    ) : (
+                      <span className="text-gray-400 text-xs">-</span>
+                    )}
                   </td>
                 </tr>
               ))}

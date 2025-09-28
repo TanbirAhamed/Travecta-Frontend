@@ -1,17 +1,12 @@
 import { Spiral } from 'ldrs/react';
 import 'ldrs/react/Spiral.css';
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from '@tanstack/react-query';
-import useAuth from "../../hooks/useAuth";
-import Swal from "sweetalert2";
 import TripCard from '../featuredExploreTripsCard/TripCard';
 
 
 const ExploreTrips = () => {
     const axiosPublic = useAxiosPublic();
-    const axiosSecure = useAxiosSecure();
-    const { user } = useAuth();
 
     // Fetch trips
     const { data: tripsData = [], isLoading: loading } = useQuery({
@@ -21,36 +16,6 @@ const ExploreTrips = () => {
             return res.data;
         },
     });
-
-    // Handle request to join
-    const handleRequest = async (trip) => {
-        if (!user) {
-            Swal.fire("Login Required", "Please log in to request to join.", "warning");
-            return;
-        }
-
-        try {
-            const payload = {
-                tripId: trip?._id,
-                userId: user?._id,
-                tripCreatedBy: trip?.createdBy,
-                tripName: trip?.tripName,
-                userEmail: user?.email,
-                userName: user?.displayName,
-                userImage: user?.photoURL
-            };
-
-            const res = await axiosSecure.post("/joinRequests", payload);
-
-            if (res.data?.insertedId || res.data?.acknowledged) {
-                Swal.fire("Request Sent!", "Your join request is pending approval.", "success");
-            } else {
-                Swal.fire("Notice", "You may have already requested to join this trip.", "info");
-            }
-        } catch (error) {
-            Swal.fire("Error!", "Failed to send join request.", "error");
-        }
-    };
 
     const publicTrips = tripsData.filter((trip) => trip?.visibility === "public");
 
@@ -78,12 +43,11 @@ const ExploreTrips = () => {
             <p className="text-gray-600 mt-6">{publicTrips?.length} trips found</p>
 
             {/* Trips Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
                 {publicTrips.map((trip) => (
-                    <TripCard 
-                      key={trip?._id} 
-                      trip={trip} 
-                      handleRequest={handleRequest} 
+                    <TripCard
+                        key={trip?._id}
+                        trip={trip}
                     />
                 ))}
             </div>
