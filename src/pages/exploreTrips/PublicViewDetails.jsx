@@ -7,6 +7,7 @@ import {
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -16,6 +17,7 @@ const PublicViewDetails = () => {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
+  const [isRequesting, setIsRequesting] = useState(false);
 
   // Fetch trip details
   const { data: trip, isLoading, isError } = useQuery({
@@ -44,11 +46,11 @@ const PublicViewDetails = () => {
   const isRejected = userJoinRequest?.status === "rejected";
   const isPending = userJoinRequest?.status === "pending";
   const isAccepted = userJoinRequest?.status === "accepted";
+
   const isTripFull =
-    trip?.participants?.length >= trip?.maxParticipants ||
-    (Array.isArray(trip?.participants)
-      ? trip?.participants?.length >= trip?.maxParticipants
-      : false);
+    Array.isArray(trip?.collaborators)
+      ? trip?.collaborators?.length >= trip?.participants
+      : false;
 
   // Handle join request
   const handleRequest = async () => {
@@ -63,12 +65,13 @@ const PublicViewDetails = () => {
     if (isTripFull) {
       return Swal.fire(
         "Trip Full",
-        "Sorry, this trip has reached its maximum participants.",
+        "Sorry, this trip has reached its participant limit.",
         "info"
       );
     }
 
-    if (isPending) {
+    // ✅ Allow re-request only if rejected
+    if (isPending || isAccepted) {
       return Swal.fire(
         "Already Requested",
         "You’ve already sent a request to join this trip.",
@@ -76,16 +79,18 @@ const PublicViewDetails = () => {
       );
     }
 
+    setIsRequesting(true);
+
     try {
       const payload = {
         tripId: trip?._id,
+        tripName: trip?.tripName,
+        tripCreatedBy: trip?.createdBy,
         joinedEmail: user?.email,
         joinedName: user?.displayName,
         joinedPhoto: user?.photoURL,
-        tripCreatedBy: trip?.createdBy,
-        tripName: trip?.tripName,
         status: "pending",
-        requestDate: new Date()?.toISOString(),
+        requestedAt: new Date(),
       };
 
       const res = await axiosSecure.post("/joinRequests", payload);
@@ -100,13 +105,15 @@ const PublicViewDetails = () => {
       } else {
         Swal.fire(
           "Notice",
-          "You may have already requested to join this trip.",
+          res?.data?.message || "You may have already requested this trip.",
           "info"
         );
       }
     } catch (error) {
       console.error(error);
       Swal.fire("Error!", "Failed to send join request.", "error");
+    } finally {
+      setIsRequesting(false);
     }
   };
 
@@ -115,8 +122,9 @@ const PublicViewDetails = () => {
   if (isError) return <p className="text-red-500">Error loading trip.</p>;
   if (!trip) return <p className="text-gray-600">Trip not found.</p>;
 
-  const participants = Array.isArray(trip?.participants) ? trip?.participants : [];
-  const creator = trip?.creator || {};
+  const collaborators = Array.isArray(trip?.collaborators)
+    ? trip?.collaborators
+    : [];
 
   const formatDate = (dateStr) =>
     dateStr
@@ -140,7 +148,6 @@ const PublicViewDetails = () => {
               alt={trip?.tripName || "Trip"}
               className="rounded-lg w-full h-64 object-cover"
             />
-            {/* Top Labels */}
             <div className="absolute top-2 left-2 flex gap-2">
               <span className="bg-black/80 text-white text-xs px-2 py-1 rounded">
                 {trip?.visibility || "Public"}
@@ -163,25 +170,27 @@ const PublicViewDetails = () => {
 
               <button
                 onClick={handleRequest}
-                disabled={isTripFull || isPending || isAccepted}
+                disabled={isTripFull || isPending || isAccepted || isRequesting}
                 className={`${isAccepted
-                    ? "bg-green-500"
-                    : isPending
-                      ? "bg-gray-400"
-                      : isTripFull
-                        ? "bg-red-500"
-                        : "bg-blue-600 hover:bg-blue-800"
+                  ? "bg-green-500"
+                  : isPending
+                    ? "bg-gray-400"
+                    : isTripFull
+                      ? "bg-red-500"
+                      : "bg-blue-600 hover:bg-blue-800"
                   } text-white font-bold text-xs sm:text-sm md:text-base px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow transition duration-200`}
               >
-                {isAccepted
-                  ? "Accepted"
-                  : isPending
-                    ? "Requested"
-                    : isTripFull
-                      ? "Trip Full"
-                      : isRejected
-                        ? "Request Again"
-                        : "Request to Join"}
+                {isRequesting
+                  ? "Sending..."
+                  : isAccepted
+                    ? "Accepted"
+                    : isPending
+                      ? "Requested"
+                      : isTripFull
+                        ? "Trip Full"
+                        : isRejected
+                          ? "Request Again"
+                          : "Request to Join"}
               </button>
             </div>
 
@@ -210,10 +219,10 @@ const PublicViewDetails = () => {
               </div>
               <div>
                 <p className="text-gray-500 flex items-center">
-                  <FaUsers className="mr-2" /> Participants
+                  <FaUsers className="mr-2" /> Collaborators
                 </p>
                 <p>
-                  {participants?.length}/{trip?.maxParticipants || 0}
+                  {collaborators?.length}/{trip?.participants || 0}
                 </p>
               </div>
             </div>
@@ -236,53 +245,41 @@ const PublicViewDetails = () => {
           <h2 className="font-semibold mb-3">Trip Creator</h2>
           <div className="flex items-center gap-3">
             <img
-              src={creator?.avatar || ""}
-              alt={trip?.createdBy || "Creator"}
+              src={trip?.creatorImg || "https://via.placeholder.com/80"}
+              alt="Creator"
               className="w-12 h-12 rounded-full"
             />
             <div>
-              <p className="font-medium">{trip?.createdBy || "Unknown"}</p>
+              <p className="font-medium">{trip?.createdBy}</p>
               <p className="text-sm text-gray-500">Trip organizer</p>
             </div>
           </div>
         </div>
 
-        {/* Participants */}
+        {/* Collaborators */}
         <div className="bg-white rounded-xl shadow p-4 border border-black/15">
           <h2 className="font-semibold mb-4">
-            Participants ({participants?.length}/{trip?.maxParticipants || 0})
+            Collaborators ({collaborators?.length}/{trip?.participants || 0})
           </h2>
           <ul className="space-y-3">
-            {participants?.length > 0 ? (
-              participants.map((p, idx) => (
+            {collaborators?.length > 0 ? (
+              collaborators.map((p, idx) => (
                 <li key={idx} className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <img
-                      src={p?.avatar || "https://via.placeholder.com/40"}
-                      alt={p?.name || "Participant"}
+                      src={p?.image || "https://via.placeholder.com/40"}
+                      alt={p?.name || "Collaborator"}
                       className="w-10 h-10 rounded-full"
                     />
                     <div>
                       <p className="font-medium">{p?.name || "Unknown"}</p>
-                      <p className="text-sm text-gray-500">
-                        {p?.role || "Member"}
-                      </p>
+                      <p className="text-sm text-gray-500">Member</p>
                     </div>
                   </div>
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full ${p?.paymentStatus === "Paid"
-                        ? "bg-green-100 text-green-700"
-                        : p?.paymentStatus === "Pending"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-gray-100 text-gray-700"
-                      }`}
-                  >
-                    {p?.paymentStatus || "N/A"}
-                  </span>
                 </li>
               ))
             ) : (
-              <p className="text-gray-500">No participants yet.</p>
+              <p className="text-gray-500">No collaborators yet.</p>
             )}
           </ul>
         </div>
