@@ -54,7 +54,7 @@ const CreateTrips = () => {
           description: data.description,
           budget: parseInt(data.budget),
           participants: parseInt(data.participants),
-          collaborators: data.collaborators,
+          collaborators: data.collaborators || [],
           visibility: data.visibility,
           tripImage: res.data.data.display_url,
           createdBy: user?.email,
