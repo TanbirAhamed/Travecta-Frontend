@@ -58,6 +58,7 @@ const CreateTrips = () => {
           visibility: data.visibility,
           tripImage: res.data.data.display_url,
           createdBy: user?.email,
+          creatorImg: user?.photoURL
         };
 
         // Save to backend
