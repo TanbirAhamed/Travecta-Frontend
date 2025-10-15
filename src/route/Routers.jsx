@@ -28,17 +28,21 @@ const Routers = () => {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
+
+        {/* adminDashboard */}
         <Route path="/admindashboard" element={<AdminDashboard />}>
           <Route index element={<AllTrips />} />
           <Route path='allusers' element={<AllUsers />} />
         </Route>
 
+        {/* userDashboard */}
         <Route path='/userdashboard' element={<PrivateRoute><UserDashboard /></PrivateRoute>}>
           <Route index element={<BudgetExpenses />} />
           <Route path='mytrips' element={<MyTrips />} />
           <Route path='joinedtrips' element={<JoinedTrips />} />
           <Route path='joinrequests' element={<JoinRequests />} />
         </Route>
+        
         <Route path='createtrip' element={<PrivateRoute><CreateTrips /></PrivateRoute>} />
         <Route path='exploretrips' element={<ExploreTrips />} />
         <Route path='/publicviewdetails/:id' element={<PublicViewDetails />} />

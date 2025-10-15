@@ -110,7 +110,6 @@ const PublicViewDetails = () => {
         );
       }
     } catch (error) {
-      console.error(error);
       Swal.fire("Error!", "Failed to send join request.", "error");
     } finally {
       setIsRequesting(false);
