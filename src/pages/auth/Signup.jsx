@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { FaUserPlus } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import { FcGoogle } from "react-icons/fc";
 
 const Signup = () => {
-    const { createNewUser, updateUserProfile, setUser } = useAuth();
+    const { createNewUser, updateUserProfile, setUser, handleGoogle } = useAuth();
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const axiosPublic = useAxiosPublic();
@@ -76,8 +77,30 @@ const Signup = () => {
             })
     };
 
+    const handleGoogleSignUp = () => {
+        handleGoogle()
+            .then(result => {
+                const user = result.user;
+                setUser(user);
+                const userInfo = {
+                    name: result.user?.displayName,
+                    email: result.user?.email,
+                    image: result.user?.photoURL,
+                    role: 'user'
+                };
+                axiosPublic.post('/users', userInfo)
+                    .then(() => {
+                        navigate('/')
+                    })
+            })
+            .catch(err => {
+                setError(err.message)
+            })
+    }
+
+
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-[#f9fdf8] px-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-[#f9fdf8] px-4 py-8">
             {/* Logo + Heading */}
             <div className="text-center mb-8">
                 <div className="flex items-center justify-center gap-2 text-xl font-bold">
@@ -152,10 +175,12 @@ const Signup = () => {
                 {/* Login link */}
                 <p className="mt-4 text-center text-sm">
                     Already have an account?{" "}
-                    <a href="/login" className="text-blue-600 font-medium">
+                    <Link to="/login" className="text-blue-600 font-medium">
                         Login
-                    </a>
+                    </Link>
                 </p>
+                <hr />
+                <button onClick={handleGoogleSignUp} className="btn bg-white m-4 hover:bg-blue-50"><FcGoogle className='text-xl' /> SignUp with Google</button>
             </div>
             {error && <p className="text-red-500 p-4">{error}</p>}
         </div>
